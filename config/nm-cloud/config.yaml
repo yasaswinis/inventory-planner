@@ -35,13 +35,16 @@ rotationManagementConfig:
 logging:
   level: INFO
   appenders:
-  - type: file
-    threshold: ERROR
+  - type: file-size-rolled
+    threshold: ALL
     timeZone: IST
     logFormat: "%-5p [%d{ISO8601}] [%X{reqId} %X{txnId}] %replace(%c: %m){'\n', '\n '}%n%replace(%ex){'(?m)^(.)',' $1'}%nopex"
-    currentLogFilename: /var/log/flipkart/sp/fk-sp-inventory-planner/app.log
-    archivedLogFilenamePattern: /var/log/flipkart/sp/fk-sp-inventory-planner/app-%d.log.gz
-    archivedFileCount: 30
+    currentLogFilename: /var/log/flipkart/rp/fk-ip-inventory-planner/production.log
+    archive: true
+    archivedLogFilenamePattern: /var/log/flipkart/rp/fk-ip-inventory-planner/production.%i.log.gz
+    archivedFileCount: 3
+    maxFileSize: 10KB
+
 
 server:
   applicationConnectors:
@@ -58,13 +61,13 @@ server:
   requestLog:
     timeZone: IST
     appenders:
-    - type: file
+    - type: file-size-rolled
       logFormat: "%-5p [%d{ISO8601}] [%X{reqId} %X{txnId}] %replace(%c: %m){'\n', '\n '}%n%replace(%ex){'(?m)^(.)',' $1'}%nopex"
       currentLogFilename: /var/log/flipkart/sp/fk-sp-inventory-planner/requests.log
       archive: true
-      archivedLogFilenamePattern: /var/log/flipkart/sp/fk-sp-inventory-planner/requests-%d.log.gz
+      archivedLogFilenamePattern: /var/log/flipkart/sp/fk-sp-inventory-planner/requests-%d{yyyy-MM-dd}-%i.log.gz
       archivedFileCount: 30
-
+      maxFileSize: 1024MB
 
 clientConfiguration:
   timeout: 80000ms
