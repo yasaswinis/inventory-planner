@@ -40,14 +40,15 @@ logging:
     "org.hibernate.type": ERROR
     "com.flipkart.mmq.Dispatcher": ERROR
   appenders:
-  - type: file
+  - type: file-size-rolled
     threshold: ALL
-    currentLogFilename: /var/log/flipkart/rp/fk-ip-inventory-planner/production.log
+    timeZone: IST
     logFormat: "%-5p [%d{ISO8601}] [%X{reqId} %X{txnId}] %replace(%c: %m){'\n', '\n '}%n%replace(%ex){'(?m)^(.)',' $1'}%nopex"
-    archivedLogFilenamePattern: /var/log/flipkart/rp/fk-ip-inventory-planner/production-%d.log.gz
+    currentLogFilename: /var/log/flipkart/rp/fk-ip-inventory-planner/production.log
     archive: true
-    archivedFileCount: 30
-    timeZone: Asia/Calcutta
+    archivedLogFilenamePattern: /var/log/flipkart/rp/fk-ip-inventory-planner/production.%i.log.gz
+    archivedFileCount: 3
+    maxFileSize: 10KB
 
 server:
   applicationConnectors:
