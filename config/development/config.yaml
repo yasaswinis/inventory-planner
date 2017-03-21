@@ -6,7 +6,7 @@ dataSource:
   # the password
   password:
   # the JDBC URL
-  url: jdbc:mysql://localhost/erp_inv_db_development
+  url: jdbc:mysql://localhost/erp_inv_db
   # any properties specific to your JDBC driver:
   properties:
     charSet: UTF-8
@@ -34,9 +34,21 @@ rotationManagementConfig:
 
 logging:
   level: INFO
+  loggers:
+    "org.hibernate.ejb.HibernatePersistence": ERROR
+    "org.hibernate.SQL": ERROR
+    "org.hibernate.type": ERROR
+    "com.flipkart.mmq.Dispatcher": ERROR
   appenders:
-  - type: console
-    threshold: INFO
+  - type: file-size-rolled
+    threshold: ALL
+    timeZone: IST
+    logFormat: "%-5p [%d{ISO8601}] [%X{reqId} %X{txnId}] %replace(%c: %m){'\n', '\n '}%n%replace(%ex){'(?m)^(.)',' $1'}%nopex"
+    currentLogFilename: /var/log/flipkart/rp/fk-ip-inventory-planner/production.log
+    archive: true
+    archivedLogFilenamePattern: /var/log/flipkart/rp/fk-ip-inventory-planner/production.%i.log.gz
+    archivedFileCount: 4
+    maxFileSize: 500MB
 
 server:
   applicationConnectors:
@@ -57,8 +69,13 @@ server:
   requestLog:
     timeZone: IST
     appenders:
-    - type: console
-      threshold: INFO
+    - type: file-size-rolled
+      logFormat: "%-5p [%d{ISO8601}] [%X{reqId} %X{txnId}] %replace(%c: %m){'\n', '\n '}%n%replace(%ex){'(?m)^(.)',' $1'}%nopex"
+      currentLogFilename: /var/log/flipkart/rp/fk-ip-inventory-planner/requests.log
+      archive: true
+      archivedLogFilenamePattern: /var/log/flipkart/rp/fk-ip-inventory-planner/requests.%i.log.gz
+      archivedFileCount: 2
+      maxFileSize: 10KB
 
 
 zuluConfiguration:
@@ -81,6 +98,7 @@ clientConfiguration:
   gzipEnabled: false
   gzipEnabledForRequests: false
   chunkedEncodingEnabled: false
-sslClientConfiguration:
-  url: http://10.85.52.106
-  viewPath: "/supplier_selection"
+
+#sslClientConfiguration:
+#  url: http://10.85.52.106
+#  viewPath: "/supplier_selection"
