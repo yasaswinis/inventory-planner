@@ -3,7 +3,31 @@
                  xmlns="http://java.sun.com/xml/ns/persistence/orm"
                  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
                  version="1.0">
+    <named-query name="findRequirementByProjectionIds">
+        <query>
+            <![CDATA[
+            SELECT r
+            FROM Requirement r
+            WHERE
+                r.projectionId IN (:projectionIds) AND
+                r.current = true AND
+                r.enabled = true
+            ]]>
+        </query>
+    </named-query>
 
+    <named-query name="findRequirementByProjectionIds.count">
+        <query>
+            <![CDATA[
+            SELECT count(r)
+            FROM Requirement r
+            WHERE
+                r.projectionId IN (:projectionIds) AND
+                r.current = true AND
+                r.enabled = true
+            ]]>
+        </query>
+    </named-query>
     <named-query name="findRequirementByIds">
         <query>
             <![CDATA[
@@ -47,7 +71,19 @@
             WHERE
                 r.enabled = 1 and
                 r.state = :state and
-                r.fsn in :fsn
+                r.fsn in :fsns
+                ]]>
+        </query>
+    </named-query>
+
+    <named-query name="Requirement.fetchEnabledByFsns">
+        <query>
+            <![CDATA[
+            SELECT r
+            FROM Requirement r
+            WHERE
+                r.enabled = :enabled and
+                r.fsn in :fsns
                 ]]>
         </query>
     </named-query>
@@ -152,7 +188,7 @@
             SELECT w
             FROM Warehouse w
             WHERE
-                w.warehouseCode IN :whCodes
+                w.code IN :whCodes
             ]]>
         </query>
     </named-query>
@@ -163,7 +199,7 @@
             SELECT count(w)
             FROM Warehouse w
             WHERE
-                w.warehouseCode IN :whCodes
+                w.code IN :whCodes
             ]]>
         </query>
     </named-query>
@@ -176,6 +212,17 @@
             WHERE
                 iri.fsn IN :fsns AND
                 iri.status IN :statuses
+                ]]>
+        </query>
+    </named-query>
+
+    <named-query name="WarehouseInventory.fetchByFsns">
+        <query>
+            <![CDATA[
+            SELECT whinv
+            FROM WarehouseInventory whinv
+            WHERE
+                whinv.fsn IN :fsns
                 ]]>
         </query>
     </named-query>
@@ -202,7 +249,6 @@
         </query>
     </named-query>
 
-
     <named-query name="Policy.fetchByGroupIds">
         <query>
             <![CDATA[
@@ -222,6 +268,17 @@
             FROM GroupFsn gf
             WHERE
                 gf.fsn IN :fsns
+                ]]>
+        </query>
+    </named-query>
+
+    <named-query name="Forecast.fetchByFsns">
+        <query>
+            <![CDATA[
+            SELECT f
+            FROM Forecast f
+            WHERE
+                f.fsn IN :fsns
                 ]]>
         </query>
     </named-query>

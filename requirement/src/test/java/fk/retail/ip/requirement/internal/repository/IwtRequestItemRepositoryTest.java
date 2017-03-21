@@ -1,8 +1,8 @@
 package fk.retail.ip.requirement.internal.repository;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
-import fk.retail.ip.requirement.config.TestModule;
+import fk.retail.ip.requirement.config.TestDbModule;
 import fk.retail.ip.requirement.internal.entities.IwtRequest;
 import fk.retail.ip.requirement.internal.entities.IwtRequestItem;
 import fk.sp.common.extensions.jpa.TransactionalJpaRepositoryTest;
@@ -14,7 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(JukitoRunner.class)
-@UseModules(TestModule.class)
+@UseModules(TestDbModule.class)
 public class IwtRequestItemRepositoryTest extends TransactionalJpaRepositoryTest {
 
     @Inject
@@ -28,9 +28,9 @@ public class IwtRequestItemRepositoryTest extends TransactionalJpaRepositoryTest
         IwtRequestItem iwtRequestItem2 = TestHelper.getIwtRequestItem("fsn2", "dispatched", iwtRequest2);
         iwtRequestItemRepository.persist(iwtRequestItem1);
         iwtRequestItemRepository.persist(iwtRequestItem2);
-        List<IwtRequestItem> iwtRequestItemsNotFound = iwtRequestItemRepository.fetchByFsns(Lists.newArrayList("fsn1"), Lists.newArrayList("dispatched"));
+        List<IwtRequestItem> iwtRequestItemsNotFound = iwtRequestItemRepository.fetchByFsns(Sets.newHashSet("fsn1"), Sets.newHashSet("dispatched"));
         Assert.assertEquals(0, iwtRequestItemsNotFound.size());
-        List<IwtRequestItem> iwtRequestItems = iwtRequestItemRepository.fetchByFsns(Lists.newArrayList("fsn2"), Lists.newArrayList("dispatched"));
+        List<IwtRequestItem> iwtRequestItems = iwtRequestItemRepository.fetchByFsns(Sets.newHashSet("fsn2"), Sets.newHashSet("dispatched"));
         Assert.assertEquals(1, iwtRequestItems.size());
         Assert.assertEquals(iwtRequestItem2, iwtRequestItems.get(0));
         Assert.assertEquals(iwtRequest2, iwtRequestItems.get(0).getIwtRequest());

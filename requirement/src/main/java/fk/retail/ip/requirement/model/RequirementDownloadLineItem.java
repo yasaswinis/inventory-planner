@@ -1,20 +1,20 @@
 package fk.retail.ip.requirement.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.inject.Inject;
 import fk.retail.ip.requirement.internal.entities.Requirement;
 import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Created by nidhigupta.m on 26/01/17.
  */
 @XmlRootElement
 @Data
+@NoArgsConstructor
 public class RequirementDownloadLineItem {
 
     //todo: verify with excel columns
-
     @JsonProperty("FSN")
     private String fsn;
     private String warehouse;
@@ -90,6 +90,24 @@ public class RequirementDownloadLineItem {
     private String warehouseName;
     @JsonProperty("Requirement Id")
     private Long requirementId;
+    @JsonProperty("IPC Quantity Override")
+    private Integer ipcQuantityOverride;
+    @JsonProperty("IPC Quantity Override Reason")
+    private String ipcQuantityOverrideReason;
+    @JsonProperty ("CDO Quantity Override")
+    private Integer cdoQuantityOverride;
+    @JsonProperty ("CDO Quantity Override Reason")
+    private String cdoQuantityOverrideReason;
+    @JsonProperty ("CDO Price Override")
+    private Integer cdoPriceOverride;
+    @JsonProperty ("CDO Price Override Reason")
+    private String cdoPriceOverrideReason;
+    @JsonProperty ("New SLA")
+    private Integer newSla;
+    @JsonProperty ("CDO Supplier Override")
+    private String cdoSupplierOverride;
+    @JsonProperty("CDO Supplier Override Reason")
+    private String cdoSupplierOverrideReason;
 
     public RequirementDownloadLineItem(Requirement req) {
 
@@ -109,15 +127,13 @@ public class RequirementDownloadLineItem {
             this.intransitQty += (openReqQty != null ? openReqQty : 0);
             this.forecast = req.getRequirementSnapshot().getForecast();
         }
-        this.quantity = req.getQuantity()!= null ? req.getQuantity():0;
+        this.quantity = (int) req.getQuantity();
         this.supplier = req.getSupplier();
         this.mrp = req.getMrp();
-        this.app = req.getApp() != null ? req.getApp() :0;
+        this.app = req.getApp() != null ? req.getApp() : 0;
         this.totalValue = this.app * this.quantity;
         this.currency = req.getCurrency();
         this.sla = req.getSla();
         this.procType = req.getProcType();
-
     }
-
 }

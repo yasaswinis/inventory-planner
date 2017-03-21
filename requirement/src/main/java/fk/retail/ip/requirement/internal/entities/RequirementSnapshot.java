@@ -1,9 +1,10 @@
 package fk.retail.ip.requirement.internal.entities;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Data;
@@ -14,7 +15,7 @@ import lombok.Data;
 @Entity
 @XmlRootElement
 @Data
-@Table(name = "REQUIREMENT_SNAPSHOT")
+@Table(name = "requirement_snapshot")
 public class RequirementSnapshot extends ReadOnlyEntity {
 
     private String forecast;
@@ -31,7 +32,7 @@ public class RequirementSnapshot extends ReadOnlyEntity {
 
     private String policy;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "group_id")
     private Group group;
 
