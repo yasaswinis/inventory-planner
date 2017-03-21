@@ -126,9 +126,12 @@ public class RequirementService {
         String state = (String) request.getFilters().get("state");
         Set<Long> projectionIds = new HashSet<>();
         requirements = requirementRepository.findRequirements(ids, state, request.getFilters());
+        log.info("Change state Request for {} number of requirements", requirements.size());
         requirements.stream().forEach(e -> projectionIds.add(e.getProjectionId()));
         approvalService.changeState(requirements, "dummyUser", action, getter, new ApprovalService.CopyOnStateChangeAction(requirementRepository));
+        log.info("State changed for {} number of requirements", requirements.size());
         requirementRepository.updateProjection(projectionIds, approvalService.getTargetState(action));
+        log.info("Projections table updated for Requirements");
         return "{\"msg\":\"Moved " + projectionIds.size() + " projections to new state.\"}";
     }
 
