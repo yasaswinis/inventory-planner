@@ -37,8 +37,6 @@ logging:
   appenders:
   - type: console
     threshold: INFO
-
-
 server:
   applicationConnectors:
   - type: http
@@ -81,6 +79,8 @@ clientConfiguration:
   gzipEnabled: false
   gzipEnabledForRequests: false
   chunkedEncodingEnabled: false
+
+
 sslClientConfiguration:
   url: http://10.85.52.106
   viewPath: "/supplier_selection"
