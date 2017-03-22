@@ -1,6 +1,5 @@
 package fk.retail.ip.manager.config;
 
-import ch.qos.logback.core.net.ssl.SSLConfiguration;
 import fk.retail.ip.zulu.config.ZuluConfiguration;
 import fk.sp.common.extensions.dropwizard.db.HasDataSourceFactory;
 import flipkart.retail.server.admin.config.RotationManagementConfig;
