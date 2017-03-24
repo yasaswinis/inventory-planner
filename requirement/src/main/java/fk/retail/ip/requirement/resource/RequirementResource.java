@@ -35,8 +35,8 @@ public class RequirementResource {
     public RequirementResource(RequirementService requirementService) {
         this.requirementService = requirementService;
     }
-    @Timed(name="time")
-    @Metered(name="count")
+    @Timed(name="calcReqTime")
+    @Metered(name="calcReqCount")
     @ExceptionMetered
     @POST
     public void calculateRequirement(@Valid CalculateRequirementRequest calculateRequirementRequest) {
@@ -45,8 +45,8 @@ public class RequirementResource {
 
     @POST
     @Path("/download")
-    @Timed(name="time")
-    @Metered(name="count")
+    @Timed(name="downloadTime")
+    @Metered(name="downloadCount")
     @ExceptionMetered
     public Response download(DownloadRequirementRequest downloadRequirementRequest) {
         log.info("Download Requirement request received " + downloadRequirementRequest);
@@ -57,8 +57,8 @@ public class RequirementResource {
                     .build();
 
     }
-    @Timed(name="time")
-    @Metered(name="count")
+    @Timed(name="uploadTime")
+    @Metered(name="uploadCount")
     @ExceptionMetered
     @POST
     @Path("/upload")
@@ -86,8 +86,8 @@ public class RequirementResource {
     @PUT
     @Path("/state")
     @Produces(MediaType.APPLICATION_JSON)
-    @Timed(name="time")
-    @Metered(name="count")
+    @Timed(name="changeStateTime")
+    @Metered(name="changeStateCount")
     @ExceptionMetered
     public String changeState(RequirementApprovalRequest request) throws JSONException {
         return requirementService.changeState(request);
