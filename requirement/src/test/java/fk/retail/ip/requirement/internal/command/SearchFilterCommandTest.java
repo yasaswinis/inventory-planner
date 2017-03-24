@@ -1,5 +1,6 @@
 package fk.retail.ip.requirement.internal.command;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import fk.retail.ip.requirement.config.TestModule;
 import fk.retail.ip.requirement.internal.repository.GroupFsnRepository;
@@ -45,6 +46,8 @@ public class SearchFilterCommandTest {
 
     @Test
     public void testGetSearchFilterFsns() {
+        List<String> allFsns = Lists.newArrayList("fsns1", "fsn2", "fsn3", "fsn4", "fsn5");
+        Mockito.when(groupFsnRepository.getAllFsns()).thenReturn(allFsns);
         Mockito.when(productInfoRepository.getFsns(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
                 .thenReturn(Arrays.asList("fsns1", "fsn2", "fsn3"));
         Mockito.when(groupFsnRepository.getFsns(Mockito.anyString())).thenReturn(Arrays.asList("fsn1", "fsn2", "fsn4"));

@@ -22,7 +22,7 @@ public class GroupFsnRepositoryTest extends TransactionalJpaRepositoryTest {
 
     @Test
     public void testFindByFsns() {
-        Group group = TestHelper.getGroup("Test Group");
+        Group group = TestHelper.getEnabledGroup("Test Group");
         GroupFsn groupFsn = TestHelper.getGroupFsn("fsn1", group);
         groupFsnRepository.persist(groupFsn);
         List<GroupFsn> groupFsns = groupFsnRepository.findByFsns(Sets.newHashSet("fsn1"));
@@ -33,7 +33,7 @@ public class GroupFsnRepositoryTest extends TransactionalJpaRepositoryTest {
 
     @Test
     public void testGetFsnsByGroup() {
-        Group group = TestHelper.getGroup("Test_Group");
+        Group group = TestHelper.getEnabledGroup("Test_Group");
         GroupFsn groupFsn = TestHelper.getGroupFsn("fsn1", group);
         GroupFsn groupFsn1 = TestHelper.getGroupFsn("fsn2", group);
         groupFsnRepository.persist(groupFsn);
@@ -42,5 +42,18 @@ public class GroupFsnRepositoryTest extends TransactionalJpaRepositoryTest {
         Assert.assertEquals(2,fsns.size());
         Assert.assertEquals("fsn1", fsns.get(0));
         Assert.assertEquals("fsn2", fsns.get(1));
+    }
+
+    public void testGetAllFsns() {
+        Group group = TestHelper.getEnabledGroup("Test_Group");
+        Group disabledGroup = TestHelper.getDisabledGroup("Test_Group_Diabled");
+        GroupFsn groupFsn = TestHelper.getGroupFsn("fsn1", group);
+        GroupFsn groupFsn1 = TestHelper.getGroupFsn("fsn2", disabledGroup);
+        groupFsnRepository.persist(groupFsn);
+        groupFsnRepository.persist(groupFsn1);
+        List<String> fsns = groupFsnRepository.getAllFsns();
+        Assert.assertEquals(1,fsns.size());
+        Assert.assertEquals("fsn1", fsns.get(0));
+
     }
 }

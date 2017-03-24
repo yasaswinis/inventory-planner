@@ -283,6 +283,18 @@
         </query>
     </named-query>
 
+
+    <named-query name="GroupFsn.getDistinctFsns">
+        <query>
+            <![CDATA[
+            SELECT fsn
+            FROM GroupFsn gf
+            WHERE
+                gf.group.enabled = true
+                ]]>
+        </query>
+    </named-query>
+
     <named-query name="Forecast.fetchByFsns">
         <query>
             <![CDATA[
