@@ -61,7 +61,7 @@ public class RequirementSearchDataAggregator {
 
 
     protected void fetchFsnBandData(Map<String, List<RequirementSearchLineItem>> fsnToRequirement) {
-        log.info("Fetching Fsn Band data for downloading requirements");
+        log.info("Fetching Fsn Band data for search requirements");
         Set<String> fsns = fsnToRequirement.keySet();
         List<FsnBand> bands = fsnBandRepository.fetchBandDataForFSNs(fsns);
         bands.stream().forEach(b -> {
@@ -74,7 +74,7 @@ public class RequirementSearchDataAggregator {
     }
 
     protected void fetchSalesBucketData(Set<String> fsns, List<RequirementSearchLineItem> requirementSearchLineItems) {
-        log.info("Fetching sales Bucket Data for downloading requirements");
+        log.info("Fetching sales Bucket Data for search requirements");
         List<WeeklySale> sales = weeklySaleRepository.fetchWeeklySalesForFsns(fsns);
         MultiKeyMap<String, Integer> fsnWhWeekSalesMap = new MultiKeyMap();
         sales.forEach(s -> fsnWhWeekSalesMap.put(s.getFsn(), s.getWarehouse(), String.valueOf(s.getWeek()), s.getSaleQty()));
@@ -96,7 +96,7 @@ public class RequirementSearchDataAggregator {
 
 
     private void fetchDataFromZulu(Set<String> zuluFsns, Map<String, List<RequirementSearchLineItem>> fsnToRequirement ) {
-        log.info("Fetching zulu data for downloading requirements");
+        log.info("Fetching zulu data for search requirements");
         RetailProductAttributeResponse retailProductAttributeResponse = zuluClient.getRetailProductAttributes(zuluFsns);
         retailProductAttributeResponse.getEntityViews().forEach(entityView -> {
             try {

@@ -49,6 +49,7 @@ public class RequirementSearchLineItem {
     private String mrpCurrency;
     private boolean enabled;
     private String state;
+    private boolean isCurrent;
 
     public RequirementSearchLineItem(Requirement req) {
 
@@ -80,5 +81,6 @@ public class RequirementSearchLineItem {
         this.mrpCurrency = req.getMrpCurrency();
         this.enabled = req.isEnabled();
         this.state = req.getState();
+        this.isCurrent = req.isCurrent();
     }
 }

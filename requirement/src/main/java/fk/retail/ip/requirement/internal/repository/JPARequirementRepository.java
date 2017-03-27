@@ -96,6 +96,10 @@ public class JPARequirementRepository extends SimpleJpaGenericRepository<Require
             predicate = criteriaBuilder.isTrue(requirementRoot.get("projectionId").in(projectionIds));
             predicates.add(predicate);
         }
+        if (fsns != null && !fsns.isEmpty()) {
+            predicate = criteriaBuilder.isTrue(requirementRoot.get("fsn").in(fsns));
+            predicates.add(predicate);
+        }
         predicate = criteriaBuilder.isTrue(requirementRoot.get("fsn").in(fsns));
         predicates.add(predicate);
         select.where(criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()])));

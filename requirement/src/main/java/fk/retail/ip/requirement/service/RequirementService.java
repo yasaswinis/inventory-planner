@@ -152,10 +152,10 @@ public class RequirementService {
         return "{\"msg\":\"Moved " + projectionIds.size() + " projections to new state.\"}";
     }
 
-    public SearchResponse.GroupedResponse search(RequirementSearchRequest request) throws JSONException {
+    public SearchResponse.GroupedResponse search(RequirementSearchRequest request, int pageNo) throws JSONException {
         List<Requirement> requirements;
         String state = (String) request.getFilters().get("state");
-        List<String> fsns = request.getFilters().get("fsns") !=null ? searchFilterCommand.getSearchFilterFsns(request.getFilters()) : null;
+        List<String> fsns = searchFilterCommand.getSearchFilterFsns(request.getFilters());
         requirements = requirementRepository.findRequirements(null, state, fsns);
         Map<String, List<RequirementSearchLineItem>> fsnToSearchItemsMap =  searchCommandProvider.get().execute(requirements);
         SearchResponse.GroupedResponse groupedResponse = new SearchResponse.GroupedResponse(fsnToSearchItemsMap.size(), PAGE_SIZE);

@@ -291,6 +291,7 @@
             FROM GroupFsn gf
             WHERE
                 gf.group.enabled = true
+            ORDER BY gf.id
                 ]]>
         </query>
     </named-query>
