@@ -35,9 +35,9 @@ public class RequirementResource {
     public RequirementResource(RequirementService requirementService) {
         this.requirementService = requirementService;
     }
-    @Timed(name="calcReqTime")
-    @Metered(name="calcReqCount")
-    @ExceptionMetered
+    @Timed(name="calcReqTimer")
+    @Metered(name="calcReqMeter")
+    @ExceptionMetered(name="calcReqExceptionMeter")
     @POST
     public void calculateRequirement(@Valid CalculateRequirementRequest calculateRequirementRequest) {
         requirementService.calculateRequirement(calculateRequirementRequest);
@@ -45,9 +45,9 @@ public class RequirementResource {
 
     @POST
     @Path("/download")
-    @Timed(name="downloadTime")
-    @Metered(name="downloadCount")
-    @ExceptionMetered
+    @Timed(name="downloadTimer")
+    @Metered(name="downloadMeter")
+    @ExceptionMetered(name="downloadExceptionMeter")
     public Response download(DownloadRequirementRequest downloadRequirementRequest) {
         log.info("Download Requirement request received " + downloadRequirementRequest);
         StreamingOutput stream = requirementService.downloadRequirement(downloadRequirementRequest);
@@ -57,9 +57,9 @@ public class RequirementResource {
                     .build();
 
     }
-    @Timed(name="uploadTime")
-    @Metered(name="uploadCount")
-    @ExceptionMetered
+    @Timed(name="uploadTimer")
+    @Metered(name="uploadMeter")
+    @ExceptionMetered(name="uploadExceptionMeter")
     @POST
     @Path("/upload")
     @Produces(MediaType.APPLICATION_JSON)
@@ -86,9 +86,9 @@ public class RequirementResource {
     @PUT
     @Path("/state")
     @Produces(MediaType.APPLICATION_JSON)
-    @Timed(name="changeStateTime")
-    @Metered(name="changeStateCount")
-    @ExceptionMetered
+    @Timed(name="changeStateTimer")
+    @Metered(name="changeStateMeter")
+    @ExceptionMetered(name="changeStateExceptionMeter")
     public String changeState(RequirementApprovalRequest request) throws JSONException {
         return requirementService.changeState(request);
     }
