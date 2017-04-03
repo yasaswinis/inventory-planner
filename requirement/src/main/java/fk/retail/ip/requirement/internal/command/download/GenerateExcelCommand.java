@@ -23,7 +23,7 @@ public class GenerateExcelCommand {
 
     public StreamingOutput generateExcel(List<RequirementDownloadLineItem> requirementDownloadLineItems, String templateName) {
         log.info("Generating excel for {} number of requirements",requirementDownloadLineItems.size());
-        SpreadSheetWriter spreadsheet = new SpreadSheetWriter();
+        SpreadSheetWriter spreadsheet = new RequirementSpreadSheetWriter();
         ObjectMapper mapper = new ObjectMapper();
         InputStream template = getClass().getResourceAsStream(templateName);
         StreamingOutput output = (OutputStream out) -> {
