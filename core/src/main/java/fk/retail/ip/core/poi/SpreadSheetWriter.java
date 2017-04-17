@@ -34,6 +34,7 @@ public class SpreadSheetWriter {
         try (OPCPackage pkg = OPCPackage.open(tempFile.toFile())) {
             XSSFWorkbook wb = new XSSFWorkbook(pkg);
             Sheet sheet = wb.getSheetAt(0);
+            validateSheet(wb);
             //sheet.protectSheet("uneditable");
             List<String> headers = new ArrayList<>();
             Row headerRow = sheet.getRow(0);
@@ -80,4 +81,8 @@ public class SpreadSheetWriter {
         editableStyle.setLocked(false);
         cell.setCellStyle(editableStyle);
     }
+
+        protected void validateSheet(XSSFWorkbook wb){
+    }
+
 }
