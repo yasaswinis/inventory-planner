@@ -7,6 +7,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.IOException;
@@ -21,9 +22,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author pragalathan.m
  */
+@Slf4j
 public class SpreadSheetWriter {
 
     private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd_HHmmss.S");
@@ -31,13 +35,14 @@ public class SpreadSheetWriter {
     public void populateTemplate(InputStream template, OutputStream out, List<Map<String, Object>> records) throws InvalidFormatException, IOException {
         Path tempFile = Files.createTempFile(null, format.format(new Date()));
         Files.copy(template, tempFile, StandardCopyOption.REPLACE_EXISTING);
-
+        SXSSFWorkbook wbss;
+        List<String> headers = new ArrayList<>();
         try (OPCPackage pkg = OPCPackage.open(tempFile.toFile())) {
             XSSFWorkbook wb = new XSSFWorkbook(pkg);
+            wbss = new SXSSFWorkbook(wb, 100);
             Sheet sheet = wb.getSheetAt(0);
-            validateSheet(wb);
-            //sheet.protectSheet("uneditable");
-            List<String> headers = new ArrayList<>();
+            validateSheet(wbss);
+
             Row headerRow = sheet.getRow(0);
             for (int c = 0; c < headerRow.getLastCellNum(); c++) {
                 Cell cell = headerRow.getCell(c);
@@ -47,10 +52,12 @@ public class SpreadSheetWriter {
                 headers.add(cell.getStringCellValue());
             }
 
+
             // read csv and write to spreadsheet
-            CellStyle editableStyle = wb.createCellStyle();
+            sheet = wbss.getSheetAt(0);
+            CellStyle editableStyle = wbss.createCellStyle();
             editableStyle.setLocked(false);
-            CellStyle uneditableStyle = wb.createCellStyle();
+            CellStyle uneditableStyle = wbss.createCellStyle();
             uneditableStyle.setLocked(true);
             for (int r = 0; r < records.size(); r++) {
                 Map<String, Object> record = records.get(r);
@@ -62,11 +69,16 @@ public class SpreadSheetWriter {
                     Object value = record.get(headers.get(c));
                     Cell cell = row.getCell(c, Row.CREATE_NULL_AS_BLANK);
                     setCellValue(value, cell);
-                    applyCellStyle(editableStyle, uneditableStyle,  cell, headers.get(c));
+                    applyCellStyle( editableStyle, uneditableStyle,cell, headers.get(c));
                 }
+                out.flush();
             }
-            wb.write(out);
+            wbss.write(out);
+            out.close();
+            wbss.dispose();
         }
+
+
     }
 
 
@@ -81,11 +93,13 @@ public class SpreadSheetWriter {
         }
     }
 
-    protected void applyCellStyle(CellStyle editableStyle,CellStyle uneditableStyle, Cell cell, String columnName) {
+
+
+    protected void applyCellStyle(CellStyle editableStyle, CellStyle uneditableStyle, Cell cell, String columnName) {
         cell.setCellStyle(editableStyle);
     }
 
-        protected void validateSheet(XSSFWorkbook wb){
+    protected void validateSheet(SXSSFWorkbook wb){
     }
 
 }
