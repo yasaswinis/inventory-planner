@@ -1,5 +1,14 @@
 package fk.retail.ip.core.poi;
 
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -11,14 +20,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  * @author pragalathan.m
@@ -47,6 +48,10 @@ public class SpreadSheetWriter {
             }
 
             // read csv and write to spreadsheet
+            CellStyle editableStyle = wb.createCellStyle();
+            editableStyle.setLocked(false);
+            CellStyle uneditableStyle = wb.createCellStyle();
+            uneditableStyle.setLocked(true);
             for (int r = 0; r < records.size(); r++) {
                 Map<String, Object> record = records.get(r);
                 Row row = sheet.createRow(r + 1);
@@ -57,7 +62,7 @@ public class SpreadSheetWriter {
                     Object value = record.get(headers.get(c));
                     Cell cell = row.getCell(c, Row.CREATE_NULL_AS_BLANK);
                     setCellValue(value, cell);
-                    applyCellStyle(wb, cell, headers.get(c));
+                    applyCellStyle(editableStyle, uneditableStyle,  cell, headers.get(c));
                 }
             }
             wb.write(out);
@@ -76,9 +81,7 @@ public class SpreadSheetWriter {
         }
     }
 
-    protected void applyCellStyle(XSSFWorkbook wb, Cell cell, String columnName) {
-        CellStyle editableStyle = wb.createCellStyle();
-        editableStyle.setLocked(false);
+    protected void applyCellStyle(CellStyle editableStyle,CellStyle uneditableStyle, Cell cell, String columnName) {
         cell.setCellStyle(editableStyle);
     }
 
