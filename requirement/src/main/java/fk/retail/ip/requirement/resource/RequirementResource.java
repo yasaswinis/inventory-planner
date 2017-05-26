@@ -5,10 +5,13 @@ import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import fk.retail.ip.proc.model.PushToProcResponse;
 import fk.retail.ip.requirement.model.*;
 import fk.retail.ip.requirement.service.RequirementService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.json.JSONException;
 
@@ -20,6 +23,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * Created by nidhigupta.m on 26/01/17.
@@ -35,12 +39,24 @@ public class RequirementResource {
     public RequirementResource(RequirementService requirementService) {
         this.requirementService = requirementService;
     }
+
+    @Timed(name="batchTriggerReqTimer")
+    @Metered(name="batchTriggerReqMeter")
+    @ExceptionMetered(name="batchTriggerReqExceptionMeter")
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response batchTriggerRequirement(@Valid TriggerRequirementRequest triggerRequirementRequest) {
+        List<String> fsns = requirementService.triggerRequirement(triggerRequirementRequest);
+        return Response.ok().entity(fsns).build();
+    }
+
     @Timed(name="calcReqTimer")
     @Metered(name="calcReqMeter")
     @ExceptionMetered(name="calcReqExceptionMeter")
     @POST
-    public void calculateRequirement(@Valid CalculateRequirementRequest calculateRequirementRequest) {
+    public Response calculateRequirement(@Valid CalculateRequirementRequest calculateRequirementRequest) {
         requirementService.calculateRequirement(calculateRequirementRequest);
+        return Response.status(Response.Status.CREATED).build();
     }
 
     @POST
@@ -64,10 +80,13 @@ public class RequirementResource {
     @Path("/upload")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
+
     public Response uploadProjectionOverride(
             @FormDataParam("datafile") InputStream inputStream,
             @FormDataParam("state") String state,
-            @HeaderParam("X-Proxy-User") String userId
+            @HeaderParam("X-Proxy-User") String userId,
+            @FormDataParam("datafile") final FormDataBodyPart formBody,
+            @FormDataParam("datafile") final FormDataContentDisposition fileDetail
     ) {
 
         log.info("Upload Requirement request received for " + state + " state");
@@ -75,7 +94,7 @@ public class RequirementResource {
             if (userId == null) {
                 userId = "dummyUser";
             }
-            UploadResponse uploadResponse = requirementService.uploadRequirement(inputStream, state, userId);
+            UploadResponse uploadResponse = requirementService.uploadRequirement(inputStream, fileDetail, formBody, state, userId);
             log.info("Successfully updated " + uploadResponse.getSuccessfulRowCount() + " records");
             return Response.ok(uploadResponse).build();
         } catch (IOException ioException) {
@@ -86,6 +105,7 @@ public class RequirementResource {
             return Response.status(400).build();
         }
     }
+
 
     @PUT
     @Path("/state")
@@ -98,6 +118,20 @@ public class RequirementResource {
             userId = "dummyUser";
         }
         return requirementService.changeState(request, userId);
+    }
+
+    @POST
+    @Path("/push_to_proc")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String pushToProc(RaisePORequest request, @HeaderParam("X-Proxy-User") String userId) throws JSONException {
+        return requirementService.pushToProc(request, userId);
+    }
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/callback/{req_id}")
+    public String updateRequirements(@PathParam("req_id") String reqId, PushToProcResponse callback) {
+        return requirementService.setPurchaseOrderId(reqId, callback);
     }
 
     @POST

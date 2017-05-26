@@ -39,6 +39,19 @@
         </query>
     </named-query>
 
+    <named-query name="findActiveRequirementForState">
+        <query>
+            <![CDATA[
+            SELECT r
+            FROM Requirement r
+            WHERE
+                r.id in :ids AND
+                r.current = true AND
+                r.state = :state
+                 ]]>
+        </query>
+    </named-query>
+
     <named-query name="findRequirementByIds.count">
         <query>
             <![CDATA[
@@ -276,6 +289,32 @@
         </query>
     </named-query>
 
+
+    <named-query name="Policy.fetchByFsnsAndType">
+        <query>
+            <![CDATA[
+            SELECT p
+            FROM Policy p
+            WHERE
+                p.fsn IN :fsns AND
+                p.policyType = :type
+                ]]>
+        </query>
+    </named-query>
+
+    <named-query name="Policy.fetchByGroupIdsAndType">
+        <query>
+            <![CDATA[
+            SELECT p
+            FROM Policy p
+            WHERE
+                p.group.id IN :ids AND
+                p.fsn IS NULL AND
+                p.policyType = :type
+                ]]>
+        </query>
+    </named-query>
+
     <named-query name="GroupFsn.fetchByFsns">
         <query>
             <![CDATA[
@@ -298,11 +337,22 @@
         </query>
     </named-query>
 
+    <named-query name="GroupFsn.findByGroupIds">
+        <query>
+            <![CDATA[
+            SELECT gf
+            FROM GroupFsn gf
+            WHERE
+                gf.group.id in :ids
+                ]]>
+        </query>
+    </named-query>
+
 
     <named-query name="GroupFsn.getDistinctFsns">
         <query>
             <![CDATA[
-            SELECT fsn
+            SELECT DISTINCT fsn
             FROM GroupFsn gf
             WHERE
                 gf.group.enabled = true
@@ -391,6 +441,20 @@
                   ]]>
         </query>
     </named-query>
+
+    <named-query name="findEmailDetailsByStencilId">
+        <query>
+            <![CDATA[
+            SELECT t
+            FROM EmailDetails t
+            WHERE
+                t.stencilId = :stencilId AND
+                t.group = :groupName
+                  ]]>
+        </query>
+    </named-query>
+
+    findEmailDetailsByStencilId
 
 
 

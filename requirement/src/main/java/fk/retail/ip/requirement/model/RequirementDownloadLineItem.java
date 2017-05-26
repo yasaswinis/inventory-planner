@@ -58,7 +58,7 @@ public class RequirementDownloadLineItem {
     @JsonProperty("Forecast")
     private String forecast;
     @JsonProperty("Total Value")
-    private Integer totalValue;
+    private Double totalValue;
     @JsonProperty("Intransit")
     private Integer intransitQty;
     @JsonProperty("Quantity")
@@ -68,7 +68,7 @@ public class RequirementDownloadLineItem {
     @JsonProperty("MRP")
     private Integer mrp;
     @JsonProperty("Purchase Price")
-    private Integer app;
+    private Double app;
     @JsonProperty("Currency")
     private String currency;
     @JsonProperty("SLA")
@@ -90,7 +90,7 @@ public class RequirementDownloadLineItem {
     @JsonProperty("Warehouse")
     private String warehouseName;
     @JsonProperty("Requirement Id")
-    private Long requirementId;
+    private String requirementId;
     @JsonProperty("IPC Quantity Override")
     private Integer ipcQuantityOverride;
     @JsonProperty("IPC Quantity Override Reason")
@@ -100,7 +100,7 @@ public class RequirementDownloadLineItem {
     @JsonProperty ("CDO Quantity Override Reason")
     private String cdoQuantityOverrideReason;
     @JsonProperty ("CDO Price Override")
-    private Integer cdoPriceOverride;
+    private Double cdoPriceOverride;
     @JsonProperty ("CDO Price Override Reason")
     private String cdoPriceOverrideReason;
     @JsonProperty ("New SLA")

@@ -8,11 +8,16 @@ import fk.retail.ip.requirement.config.TestModule;
 import fk.retail.ip.requirement.internal.Constants;
 import fk.retail.ip.requirement.internal.entities.Requirement;
 import fk.retail.ip.requirement.internal.entities.RequirementSnapshot;
+import fk.retail.ip.requirement.internal.enums.OverrideKey;
 import fk.retail.ip.requirement.internal.enums.PolicyType;
+import fk.retail.ip.requirement.internal.enums.RequirementApprovalState;
 import fk.retail.ip.requirement.internal.repository.TestHelper;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import fk.retail.ip.requirement.model.RequirementChangeMap;
 import fk.retail.ip.requirement.model.RequirementChangeRequest;
 import org.jukito.JukitoRunner;
 import org.jukito.UseModules;
@@ -126,30 +131,74 @@ public class RopRocApplicatorTest {
         Assert.assertEquals("{\"Rop\":42.00},{\"Roc\":45.00}", requirement1.getRequirementSnapshot().getPolicy());
         Assert.assertEquals(0, requirement2.getQuantity(), 0.01);
         Assert.assertEquals(120, requirement3.getQuantity(), 0.01);
+        RequirementChangeRequest request = requirementChangeRequestList.get(0);
+        List<RequirementChangeMap> maps = request.getRequirementChangeMaps();
+
+        Assert.assertEquals(OverrideKey.QUANTITY.toString(), maps.get(0).getAttribute());
+        Assert.assertNull(maps.get(0).getOldValue());
+        Assert.assertEquals(String.valueOf(requirement1.getQuantity()), maps.get(0).getNewValue());
+        Assert.assertEquals("ROP ROC policies applied", maps.get(0).getReason());
+
+        request = requirementChangeRequestList.get(1);
+        maps = request.getRequirementChangeMaps();
+        Assert.assertEquals(OverrideKey.QUANTITY.toString(), maps.get(0).getAttribute());
+        Assert.assertNull(maps.get(0).getOldValue());
+        Assert.assertEquals(String.valueOf(requirement2.getQuantity()), maps.get(0).getNewValue());
+        Assert.assertEquals("ROP ROC policies applied", maps.get(0).getReason());
+
+        request = requirementChangeRequestList.get(2);
+        maps = request.getRequirementChangeMaps();
+        Assert.assertEquals(OverrideKey.QUANTITY.toString(), maps.get(0).getAttribute());
+        Assert.assertNull(maps.get(0).getOldValue());
+        Assert.assertEquals(String.valueOf(requirement3.getQuantity()), maps.get(0).getNewValue());
+        Assert.assertEquals("ROP ROC policies applied", maps.get(0).getReason());
 
         //testing effect of on hand quantity
         //rop < on hand
         Mockito.when(onHandQuantityContext.getTotalQuantity(Matchers.anyString(), Matchers.anyString())).thenReturn(22.0);
         requirement1.setQuantity(0);
+        requirementChangeRequestList = new ArrayList<>();
         ropRocApplicator.applyPolicies("fsn1", Lists.newArrayList(requirement1), policyMap, forecastContext, onHandQuantityContext, requirementChangeRequestList);
         Assert.assertEquals(0, requirement1.getQuantity(), 0.01);
+        Assert.assertEquals(0, requirementChangeRequestList.size());
 
         //rop = on hand
         Mockito.when(onHandQuantityContext.getTotalQuantity(Matchers.anyString(), Matchers.anyString())).thenReturn(21.0);
         requirement1.setQuantity(0);
+        requirementChangeRequestList = new ArrayList<>();
         ropRocApplicator.applyPolicies("fsn1", Lists.newArrayList(requirement1), policyMap, forecastContext, onHandQuantityContext, requirementChangeRequestList);
         Assert.assertEquals(3, requirement1.getQuantity(), 0.01);
+
+        request = requirementChangeRequestList.get(0);
+        maps = request.getRequirementChangeMaps();
+
+        Assert.assertEquals(OverrideKey.QUANTITY.toString(), maps.get(0).getAttribute());
+        Assert.assertNull(maps.get(0).getOldValue());
+        Assert.assertEquals(String.valueOf(requirement1.getQuantity()), maps.get(0).getNewValue());
+        Assert.assertEquals("ROP ROC policies applied", maps.get(0).getReason());
 
         //rop > on hand
         Mockito.when(onHandQuantityContext.getTotalQuantity(Matchers.anyString(), Matchers.anyString())).thenReturn(20.0);
         requirement1.setQuantity(0);
+        requirementChangeRequestList = new ArrayList<>();
         ropRocApplicator.applyPolicies("fsn1", Lists.newArrayList(requirement1), policyMap, forecastContext, onHandQuantityContext, requirementChangeRequestList);
         Assert.assertEquals(4, requirement1.getQuantity(), 0.01);
 
+        request = requirementChangeRequestList.get(0);
+        maps = request.getRequirementChangeMaps();
+
+        Assert.assertEquals(OverrideKey.QUANTITY.toString(), maps.get(0).getAttribute());
+        Assert.assertNull(maps.get(0).getOldValue());
+        Assert.assertEquals(String.valueOf(requirement1.getQuantity()), maps.get(0).getNewValue());
+        Assert.assertEquals("ROP ROC policies applied", maps.get(0).getReason());
+
         //error state should be ignored
         requirement1.setQuantity(0);
+        requirement1.setState(RequirementApprovalState.ERROR.toString());
         requirement1.setState(Constants.ERROR_STATE);
+        requirementChangeRequestList = new ArrayList<>();
         ropRocApplicator.applyPolicies("fsn1", Lists.newArrayList(requirement1), policyMap, forecastContext, onHandQuantityContext, requirementChangeRequestList);
         Assert.assertEquals(0, requirement1.getQuantity(), 0.01);
+        Assert.assertEquals(0, requirementChangeRequestList.size());
     }
 }

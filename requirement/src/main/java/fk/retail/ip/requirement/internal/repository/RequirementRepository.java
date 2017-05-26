@@ -13,8 +13,9 @@ public interface RequirementRepository extends JpaGenericRepository<Requirement,
 
     int PAGE_SIZE = 1000;
 
-    List<Requirement> findRequirementByIds(List<Long> requirementIds);
+    List<Requirement> findRequirementByIds(List<String> requirementIds);
 
+    List<Requirement> findActiveRequirementForState(List<String> requirementIds, String state);
 
     List<Long> findProjectionIds(List<String> fsns, String state);
 

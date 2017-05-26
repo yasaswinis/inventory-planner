@@ -66,7 +66,19 @@ server:
       archive: true
       archivedLogFilenamePattern: /var/log/flipkart/sp/fk-sp-inventory-planner/requests-%d.log.gz
       archivedFileCount: 30
+
 sslClientConfiguration:
   url: http://10.85.52.106
   viewPath: "/supplier_selection"
+  batchSize: 10
 
+triggerRequirementConfiguration:
+  url: http://10.85.53.212/v1/requirement
+  projectionQueueName: retail_rp_internal_projection
+  fetchDataBatchSize: 10000
+  createReqBatchSize: 10
+
+d42Configuration:
+  accessKey: "EKBK5XNIHLM7E3290RBX"
+  secretKey: "QGXi9BkrIArIb255tHRFR7trEcPSvxBi3X0LsBwP"
+  url: "http://10.47.2.2"

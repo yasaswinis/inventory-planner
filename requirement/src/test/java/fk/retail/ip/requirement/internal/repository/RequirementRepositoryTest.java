@@ -1,25 +1,20 @@
 package fk.retail.ip.requirement.internal.repository;
 
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import fk.retail.ip.requirement.config.TestDbModule;
 import fk.retail.ip.requirement.internal.entities.Requirement;
 import fk.retail.ip.requirement.internal.entities.RequirementSnapshot;
 import fk.sp.common.extensions.jpa.TransactionalJpaRepositoryTest;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.IntStream;
-import java.util.stream.LongStream;
-import org.apache.commons.lang.ArrayUtils;
 import org.jukito.JukitoRunner;
 import org.jukito.UseModules;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @RunWith(JukitoRunner.class)
 @UseModules(TestDbModule.class)
@@ -39,7 +34,9 @@ public class RequirementRepositoryTest extends TransactionalJpaRepositoryTest {
     public void testFindRequirementById() {
         Requirement requirement = getRequirement(1);
         requirementRepository.persist(requirement);
-        List<Requirement> requirements = requirementRepository.findRequirementByIds(Lists.newArrayList(new Long(1)));
+        List<Requirement> allRequirements = requirementRepository.findAll();
+        List<String> idsAsList = allRequirements.stream().map(Requirement::getId).collect(Collectors.toList());
+        List<Requirement> requirements = requirementRepository.findRequirementByIds(idsAsList);
         Assert.assertEquals(1, requirements.size());
         Assert.assertEquals(requirement, requirements.get(0));
     }
@@ -47,17 +44,17 @@ public class RequirementRepositoryTest extends TransactionalJpaRepositoryTest {
     @Test
     public void testFindRequirementByIdArray() {
 
-        IntStream.rangeClosed(1, 30).forEach(i -> {
+        IntStream.rangeClosed(1, 10).forEach(i -> {
 
             requirementRepository.persist(getRequirement(i));
         });
 
-        long[] ids = LongStream.rangeClosed(1, 30).toArray();
-        Long[] idList = ArrayUtils.toObject(ids);
-        List<Long> idsAsList = Arrays.asList(idList);
+
+        List<Requirement> allRequirements = requirementRepository.findAll();
+        List<String> idsAsList = allRequirements.stream().map(Requirement::getId).collect(Collectors.toList());
 
         List<Requirement> requirements = requirementRepository.findRequirementByIds(idsAsList);
-        Assert.assertEquals(30, requirements.size());
+        Assert.assertEquals(10, requirements.size());
     }
 
     @Test
@@ -108,10 +105,32 @@ public class RequirementRepositoryTest extends TransactionalJpaRepositoryTest {
         Assert.assertNotEquals(requirements.get(0), req2);
     }
 
+    @Test
+    public void getActiveRequirementsInGivenStateByIds() {
+
+        Requirement inactiveRequirement = getRequirement(1);
+        inactiveRequirement.setCurrent(false);
+
+        requirementRepository.persist(inactiveRequirement);
+        IntStream.rangeClosed(2, 10).forEach(i -> {
+
+            requirementRepository.persist(getRequirement(i));
+        });
+
+
+        List<Requirement> allRequirements = requirementRepository.findAll();
+        List<String> idsAsList = allRequirements.stream().map(Requirement::getId).collect(Collectors.toList());
+
+        List<Requirement> requirements = requirementRepository.findActiveRequirementForState(idsAsList, "proposed");
+        Assert.assertEquals(9, requirements.size());
+    }
+
     private Requirement getRequirement(int i) {
         String fsn = "fsn" + String.valueOf(i);
-        Requirement requirement = TestHelper.getRequirement(fsn, "dummy_warehouse", "proposed", true, null, 10, "supplier",
-                10, 11, "INR", 2, "comment", "daily");
+
+        RequirementSnapshot requirementSnapshot = TestHelper.getRequirementSnapshot("",1,1,1,1,1);
+        Requirement requirement = TestHelper.getRequirement(fsn, "dummy_warehouse", "proposed", true, requirementSnapshot, 10, "supplier",
+                10, 11.0, "INR", 2, "comment", "daily", String.valueOf(i));
         requirement.setCurrent(true);
 
         return requirement;

@@ -20,7 +20,7 @@ public class SupplierView {
     int mrp;
     boolean local;
     int supplierQuantity;
-    int app;
+    Double app;
     int sla;
     boolean isPositiveSupplierQuantity;
     boolean isPublisherAndDistributor;

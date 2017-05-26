@@ -3,11 +3,17 @@ package fk.retail.ip.requirement.internal.command.upload;
 import com.google.inject.Inject;
 import fk.retail.ip.requirement.internal.Constants;
 import fk.retail.ip.requirement.internal.command.FdpRequirementIngestorImpl;
+import fk.retail.ip.requirement.internal.command.RequirementHelper;
+import fk.retail.ip.requirement.internal.entities.Requirement;
 import fk.retail.ip.requirement.internal.enums.OverrideKey;
 import fk.retail.ip.requirement.internal.enums.OverrideStatus;
+import fk.retail.ip.requirement.internal.repository.RequirementEventLogRepository;
 import fk.retail.ip.requirement.internal.repository.RequirementRepository;
 import fk.retail.ip.requirement.model.RequirementDownloadLineItem;
+import fk.retail.ip.ssl.model.SupplierSelectionResponse;
+import fk.retail.ip.requirement.model.RequirementUploadLineItem;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.map.MultiKeyMap;
 import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,17 +26,24 @@ import java.util.Optional;
 public class ProposedUploadCommand extends UploadCommand {
 
     @Inject
-    public ProposedUploadCommand(RequirementRepository requirementRepository, FdpRequirementIngestorImpl fdpRequirementIngestor) {
-        super(requirementRepository, fdpRequirementIngestor);
+    public ProposedUploadCommand(
+            RequirementRepository requirementRepository,
+            FdpRequirementIngestorImpl fdpRequirementIngestor,
+            RequirementEventLogRepository requirementEventLogRepository,
+            RequirementHelper requirementHelper
+    ) {
+        super(requirementRepository, fdpRequirementIngestor, requirementEventLogRepository, requirementHelper);
     }
 
     @Override
     public Map<String, Object> validateAndSetStateSpecificFields(
-            RequirementDownloadLineItem requirementDownloadLineItem
-    ) {
-        Integer currentQuantity = requirementDownloadLineItem.getQuantity();
-        Integer proposedQuantity = requirementDownloadLineItem.getIpcQuantityOverride();
-        String quantityOverrideComment = requirementDownloadLineItem.getIpcQuantityOverrideReason();
+            RequirementUploadLineItem requirementUploadLineItem, Requirement requirement,
+            Map<String, String> fsnToVerticalMap, MultiKeyMap<String,SupplierSelectionResponse> fsnWhSupplierMap) {
+
+        Integer currentQuantity = requirementUploadLineItem.getQuantity();
+        Object proposedQuantity = requirementUploadLineItem.getIpcQuantityOverride();
+        String quantityOverrideComment = requirementUploadLineItem.getIpcQuantityOverrideReason();
+
         Map<String, Object> overriddenFields = new HashMap<>();
 
         Optional<String> validationResponse = validateQuantityOverride(
@@ -48,7 +61,7 @@ public class ProposedUploadCommand extends UploadCommand {
 
     private Map<String, Object> getOverriddenFields(
             Integer currentQuantity,
-            Integer proposedQuantity,
+            Object proposedQuantity,
             String quantityOverrideComment
     ) {
         Map<String, Object> overriddenValues = new HashMap<>();

@@ -8,11 +8,13 @@ import fk.retail.ip.requirement.config.TestModule;
 import fk.retail.ip.requirement.internal.Constants;
 import fk.retail.ip.requirement.internal.entities.Requirement;
 import fk.retail.ip.requirement.internal.entities.RequirementSnapshot;
+import fk.retail.ip.requirement.internal.enums.OverrideKey;
 import fk.retail.ip.requirement.internal.enums.PolicyType;
 import fk.retail.ip.requirement.internal.repository.TestHelper;
 import java.util.List;
 import java.util.Map;
 
+import fk.retail.ip.requirement.model.RequirementChangeMap;
 import fk.retail.ip.requirement.model.RequirementChangeRequest;
 import org.jukito.JukitoRunner;
 import org.jukito.UseModules;
@@ -76,5 +78,30 @@ public class MaxCoverageApplicatorTest {
         maxCoverageApplicator.applyPolicies("fsn1", requirements, policyMap, forecastContext, onHandQuantityContext, requirementChangeRequestList);
         double totalQuantity = requirement1.getQuantity()+requirement2.getQuantity()+requirement3.getQuantity()+requirement4.getQuantity();
         Assert.assertEquals(105, totalQuantity, 0.01);
+
+        RequirementChangeRequest request = requirementChangeRequestList.get(0);
+        List<RequirementChangeMap> maps = request.getRequirementChangeMaps();
+
+        Assert.assertEquals(OverrideKey.QUANTITY.toString(), maps.get(0).getAttribute());
+        Assert.assertEquals("50.0", maps.get(0).getOldValue());
+        Assert.assertEquals(String.valueOf(requirement1.getQuantity()), maps.get(0).getNewValue());
+        Assert.assertEquals("MaxCoverage policy applied", maps.get(0).getReason());
+        Assert.assertEquals("system", maps.get(0).getUser());
+
+        maps = requirementChangeRequestList.get(1).getRequirementChangeMaps();
+        Assert.assertEquals(OverrideKey.QUANTITY.toString(), maps.get(0).getAttribute());
+        Assert.assertEquals("30.0", maps.get(0).getOldValue());
+        Assert.assertEquals(String.valueOf(requirement2.getQuantity()), maps.get(0).getNewValue());
+        Assert.assertEquals("MaxCoverage policy applied", maps.get(0).getReason());
+        Assert.assertEquals("system", maps.get(0).getUser());
+
+        maps = requirementChangeRequestList.get(2).getRequirementChangeMaps();
+        Assert.assertEquals(OverrideKey.QUANTITY.toString(), maps.get(0).getAttribute());
+        Assert.assertEquals("20.0", maps.get(0).getOldValue());
+        Assert.assertEquals(String.valueOf(requirement3.getQuantity()), maps.get(0).getNewValue());
+        Assert.assertEquals("MaxCoverage policy applied", maps.get(0).getReason());
+        Assert.assertEquals("system", maps.get(0).getUser());
+
+        Assert.assertEquals(5, requirementChangeRequestList.size());
     }
 }

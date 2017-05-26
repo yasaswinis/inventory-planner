@@ -1,0 +1,28 @@
+{
+  "stateStencilMapping": {
+    "proposed": {
+      "forward": "",
+      "backward": ""
+    },
+    "verified": {
+      "forward": "STN3MOG3F",
+      "backward": ""
+    },
+    "approved": {
+      "forward": "STNK85ZW9",
+      "backward": "STNVI1MMU"
+    },
+    "bd_approved": {
+      "forward": "STNM6GJCP",
+      "backward": "STNMDH4D3"
+    },
+    "bizfin_approved": {
+      "forward": "",
+      "backward": "STNE6M5V5"
+    },
+    "ipc_finalized": {
+      "forward": "STNIOCM8V",
+      "backward": ""
+    }
+  }
+}

@@ -12,6 +12,7 @@ import fk.retail.ip.requirement.internal.enums.PolicyType;
 import java.util.List;
 import java.util.Map;
 
+import fk.retail.ip.requirement.internal.enums.RequirementApprovalState;
 import fk.retail.ip.requirement.model.RequirementChangeMap;
 import fk.retail.ip.requirement.model.RequirementChangeRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,7 @@ public class MaxCoverageApplicator extends PolicyApplicator {
         if (isValidMaxCoverage(maxCoverageDays)) {
             double maxCoverageQuantity = convertDaysToQuantity(maxCoverageDays, forecastContext.getForecast(fsn));
             double totalOnHandQuantity = onHandQuantityContext.getTotalQuantity(fsn);
-            double totalProjectedQuantity = requirements.stream().filter(requirement -> !Constants.ERROR_STATE.equals(requirement.getState()) && fsn.equals(requirement.getFsn())).mapToDouble(Requirement::getQuantity).sum();
+            double totalProjectedQuantity = requirements.stream().filter(requirement -> !RequirementApprovalState.ERROR.toString().equals(requirement.getState()) && fsn.equals(requirement.getFsn())).mapToDouble(Requirement::getQuantity).sum();
             if (maxCoverageQuantity < totalProjectedQuantity + totalOnHandQuantity) {
                 double reductionRatio = (maxCoverageQuantity - totalOnHandQuantity) / totalProjectedQuantity;
                 requirements.forEach(requirement -> {
@@ -37,7 +38,6 @@ public class MaxCoverageApplicator extends PolicyApplicator {
                     double reducedQuantity = requirement.getQuantity() * reductionRatio;
                     reducedQuantity = reducedQuantity > 0 ? reducedQuantity : 0;
                     //Add CONTROL_POLICY_QUANTITY_OVERRIDE events to fdp request
-                    log.info("Adding CONTROL_POLICY_QUANTITY_OVERRIDE(MaxCoverage) events to fdp request");
                     RequirementChangeRequest requirementChangeRequest = new RequirementChangeRequest();
                     List<RequirementChangeMap> requirementChangeMaps = Lists.newArrayList();
                     requirementChangeMaps.add(PayloadCreationHelper.createChangeMap(OverrideKey.QUANTITY.toString(), String.valueOf(requirement.getQuantity()), String.valueOf(reducedQuantity),FdpRequirementEventType.CONTROL_POLICY_QUANTITY_OVERRIDE.toString(), "MaxCoverage policy applied", "system"));

@@ -26,11 +26,22 @@ public class SearchFilterCommand {
         List<String> allFsns = groupFsnRepository.getAllFsns();
         List<String> fsns = (List<String>) filters.get("fsns");
         getFsnsIntersection(allFsns,fsns);
-        List<String> productInfoFsns = getProductInfoFsns(filters);
-        getFsnsIntersection(allFsns,productInfoFsns);
+
+        if(filterOnCategory(filters)) {
+            List<String> productInfoFsns = getProductInfoFsns(filters);
+            getFsnsIntersection(allFsns, productInfoFsns);
+        }
+
         List<String> groupFsns = getGroupFsns(filters);
         getFsnsIntersection(allFsns, groupFsns);
         return allFsns;
+    }
+
+    private boolean filterOnCategory(Map<String, Object> filters) {
+
+        return (filters.containsKey("vertical")  || filters.containsKey("category") ||
+                filters.containsKey("superCategory") || filters.containsKey("businessUnit"));
+
     }
 
     private List<String> getProductInfoFsns(Map<String, Object> filters) {

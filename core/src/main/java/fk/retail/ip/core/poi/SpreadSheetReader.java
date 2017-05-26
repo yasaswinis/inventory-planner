@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import fk.retail.ip.core.enums.CellType;
+import fk.retail.ip.core.enums.ColumnType;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.Cell;
@@ -50,16 +53,46 @@ public class SpreadSheetReader {
                         continue;
                     }
                     DataFormatter formatter = new DataFormatter();
+                    String value = formatter.formatCellValue(cell);
+                    value = removeUnnecessaryCharacters(value);
 
-                    if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-                        String value = formatter.formatCellValue(cell);
+                    if (CellType.getType(headers.get(c)) == ColumnType.DOUBLE) {
                         try {
-                            values.put(headers.get(c), Long.parseLong(value));
-                        } catch (NumberFormatException ex) {
                             values.put(headers.get(c), Double.parseDouble(value));
+                        } catch (NumberFormatException ex) {
+                            values.put(headers.get(c), cell.getStringCellValue());
                         }
+
+                    } else if(CellType.getType(headers.get(c)) == ColumnType.INTEGER) {
+                        try {
+                            Integer intValue = Integer.parseInt(value);
+                            values.put(headers.get(c), intValue);
+                        } catch (NumberFormatException e) {
+                            try {
+                                Double doubleValue = Double.parseDouble(value);
+                                values.put(headers.get(c), doubleValue);
+                            } catch (NumberFormatException ex) {
+                                values.put(headers.get(c), value);
+                            }
+                        }
+
                     } else {
-                        values.put(headers.get(c), cell.getStringCellValue());
+                        if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            try {
+                                values.put(headers.get(c), Long.parseLong(value));
+                            } catch (NumberFormatException ex) {
+                                values.put(headers.get(c), Double.parseDouble(value));
+                            }
+                        } else {
+                            values.put(headers.get(c), cell.getStringCellValue());
+                        }
+                    }
+
+                    if (values.get(headers.get(c)) instanceof String) {
+                        String cellValue = values.get(headers.get(c)).toString();
+                        if (cellValue.isEmpty()) {
+                            values.put(headers.get(c), null);
+                        }
                     }
 
                     if (blankRow) {
@@ -77,5 +110,10 @@ public class SpreadSheetReader {
             }
         }
         return rows;
+    }
+
+    public String removeUnnecessaryCharacters(String value) {
+        value = value.trim();
+        return value.replace("\u00A0", "");
     }
 }

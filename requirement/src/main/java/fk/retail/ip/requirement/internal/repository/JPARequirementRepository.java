@@ -8,10 +8,8 @@ import fk.retail.ip.requirement.internal.entities.Requirement;
 import fk.sp.common.extensions.jpa.Page;
 import fk.sp.common.extensions.jpa.PageRequest;
 import fk.sp.common.extensions.jpa.SimpleJpaGenericRepository;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
+import java.util.*;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,12 +37,21 @@ public class JPARequirementRepository extends SimpleJpaGenericRepository<Require
     }
 
     @Override
-    public List<Requirement> findRequirementByIds(List<Long> requirementIds) {
+    public List<Requirement> findRequirementByIds(List<String> requirementIds) {
         //todo: now we find requirements by projecion_id(at fsn level. need to think abt it)
         TypedQuery<Requirement> query = getEntityManager().createNamedQuery("findRequirementByIds", Requirement.class);
         query.setParameter("ids", requirementIds);
         List<Requirement> requirements = query.getResultList();
         return requirements;
+    }
+
+    @Override
+    public List<Requirement> findActiveRequirementForState(List<String> requirementIds, String state) {
+        if (requirementIds.isEmpty()) {
+            return new ArrayList<>();
+        }
+        TypedQuery<Requirement> query = getCriteriaQuery(state, requirementIds);
+        return query.getResultList();
     }
 
     @Override
@@ -63,8 +70,6 @@ public class JPARequirementRepository extends SimpleJpaGenericRepository<Require
         List<Requirement> requirements = query.getResultList();
         return requirements;
     }
-
-
 
 
     public List<Requirement> findRequirements(List<Long> projectionIds, String requirementState, List<String> fsns , int pageNumber, int pageSize) {
@@ -113,6 +118,25 @@ public class JPARequirementRepository extends SimpleJpaGenericRepository<Require
         TypedQuery<Requirement> query = entityManager.createQuery(select);
         return query;
 
+    }
+
+    private TypedQuery<Requirement> getCriteriaQuery(String requirementState, List<String> requirementIds) {
+        EntityManager entityManager = getEntityManager();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Requirement> criteriaQuery = criteriaBuilder.createQuery(Requirement.class);
+        Root<Requirement> requirementRoot = criteriaQuery.from(Requirement.class);
+        requirementRoot.fetch("requirementSnapshot");
+        CriteriaQuery<Requirement> select = criteriaQuery.select(requirementRoot);
+        List<Predicate> predicates = Lists.newArrayList();
+        Predicate predicate = criteriaBuilder.equal(requirementRoot.get("current"), 1);
+        predicates.add(predicate);
+        predicate = criteriaBuilder.equal(requirementRoot.get("state"), requirementState);
+        predicates.add(predicate);
+        predicate = criteriaBuilder.isTrue(requirementRoot.get("id").in(requirementIds));
+        predicates.add(predicate);
+        select.where(criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()])));
+        TypedQuery<Requirement> query = entityManager.createQuery(select);
+        return query;
     }
 
     //TODO: legacy code

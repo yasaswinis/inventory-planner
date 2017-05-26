@@ -6,14 +6,15 @@ import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import fk.retail.ip.requirement.config.TestModule;
 import fk.retail.ip.requirement.internal.Constants;
-import fk.retail.ip.requirement.internal.command.PayloadCreationHelper;
 import fk.retail.ip.requirement.internal.entities.Requirement;
 import fk.retail.ip.requirement.internal.entities.RequirementSnapshot;
+import fk.retail.ip.requirement.internal.enums.OverrideKey;
 import fk.retail.ip.requirement.internal.enums.PolicyType;
 import fk.retail.ip.requirement.internal.repository.TestHelper;
 import java.util.List;
 import java.util.Map;
 
+import fk.retail.ip.requirement.model.RequirementChangeMap;
 import fk.retail.ip.requirement.model.RequirementChangeRequest;
 import org.jukito.JukitoRunner;
 import org.jukito.UseModules;
@@ -21,10 +22,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 
 
 @RunWith(JukitoRunner.class)
@@ -72,6 +70,32 @@ public class CaseSizeApplicatorTest {
         Assert.assertEquals(50, requirement3.getQuantity(), 0.01);
         Assert.assertEquals(0, requirement4.getQuantity(), 0.01);
         Assert.assertEquals(50, requirement5.getQuantity(), 0.01);
+
+        RequirementChangeRequest request = requirementChangeRequestList.get(0);
+        List<RequirementChangeMap> maps = request.getRequirementChangeMaps();
+
+        Assert.assertEquals(OverrideKey.QUANTITY.toString(), maps.get(0).getAttribute());
+        Assert.assertEquals("24.0", maps.get(0).getOldValue());
+        Assert.assertEquals("0.0", maps.get(0).getNewValue());
+        Assert.assertEquals("CaseSize policy applied", maps.get(0).getReason());
+        Assert.assertEquals("system", maps.get(0).getUser());
+
+        maps = requirementChangeRequestList.get(1).getRequirementChangeMaps();
+        Assert.assertEquals(OverrideKey.QUANTITY.toString(), maps.get(0).getAttribute());
+        Assert.assertEquals("25.0", maps.get(0).getOldValue());
+        Assert.assertEquals("50.0", maps.get(0).getNewValue());
+        Assert.assertEquals("CaseSize policy applied", maps.get(0).getReason());
+        Assert.assertEquals("system", maps.get(0).getUser());
+
+        maps = requirementChangeRequestList.get(2).getRequirementChangeMaps();
+        Assert.assertEquals(OverrideKey.QUANTITY.toString(), maps.get(0).getAttribute());
+        Assert.assertEquals("26.0", maps.get(0).getOldValue());
+        Assert.assertEquals("50.0", maps.get(0).getNewValue());
+        Assert.assertEquals("CaseSize policy applied", maps.get(0).getReason());
+        Assert.assertEquals("system", maps.get(0).getUser());
+
+        Assert.assertEquals(3, requirementChangeRequestList.size());
+
     }
 
 

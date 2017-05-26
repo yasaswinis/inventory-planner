@@ -72,7 +72,7 @@ public class TestResource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<Policy> getPolicy(@QueryParam("fsn") String fsn, @QueryParam("group_id") long id) {
         if (fsn != null) {
-            return policyRepository.fetchByFsns(Sets.newHashSet(fsn));
+            return policyRepository.fetch(Sets.newHashSet(fsn));
         } else {
             return policyRepository.fetchByGroup(Sets.newHashSet(id));
         }
@@ -135,7 +135,7 @@ public class TestResource {
         requirement.setQuantity(358);
         requirement.setSupplier("supplier1");
         requirement.setMrp(100);
-        requirement.setApp(120);
+        requirement.setApp(120.0);
         requirement.setCurrency("INR");
         requirement.setSla(10);
         requirement.setOverrideComment("comment1");

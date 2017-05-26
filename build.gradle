@@ -27,8 +27,8 @@ subprojects {
         compile('fk.sp.common:spring-jpa:' + commonExtentions)
         compile('flipkart.retail.libraries:dropwizard-admin:5.0.3')
 
-        compile group: 'org.apache.poi', name: 'poi', version: '3.10-FINAL'
-        compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.10-FINAL'
+        compile group: 'org.apache.poi', name: 'poi', version: '3.16'
+        compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.16'
         compile ('fk.sp.common:restbus-sender:' + commonExtentions){
             exclude group: 'com.netflix.hystrix'
         }
@@ -74,7 +74,7 @@ dropwizardDebian {
     jmxPort = Integer.valueOf(_jmxPort)
     applicationName = "fk-ip-inventory-planner"
     parentProject = "manager"
-    javaOpts = "-Xms1024m -Xmx4096m -XX:MaxPermSize=256m -XX:+UseG1GC -verbose:gc -XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps -XX:+PrintGCDetails -Xloggc:/var/log/flipkart/ip/fk-ip-inventory-planner/gc.log"
+    javaOpts = "-Xms1024m -Xmx4096m -XX:MaxPermSize=256m -XX:+UseG1GC -verbose:gc -XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps -XX:+PrintGCDetails -Xloggc:/var/log/flipkart/rp/fk-ip-inventory-planner/gc.log"
     zip64 = true
     jreVersion = 8;
     enableLogAggregation = true

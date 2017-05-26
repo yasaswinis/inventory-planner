@@ -1,5 +1,6 @@
 package fk.retail.ip.ssl.client;
 
+import com.google.common.collect.Lists;
 import fk.retail.ip.ssl.internal.command.GetSupplierDetailsCommand;
 import fk.retail.ip.ssl.model.SupplierSelectionRequest;
 

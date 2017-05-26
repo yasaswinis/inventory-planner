@@ -63,7 +63,7 @@ public class FdpEntityMapperTest {
         requirement1.setQuantity(100);
         requirement1.setRequirementSnapshot(requirementSnapshot1);
         requirement1.setSupplier("supplier1");
-        requirement1.setApp(10);
+        requirement1.setApp(10.0);
         requirement1.setMrp(10);
         requirement1.setCurrency("INR");
         requirement1.setSla(5);

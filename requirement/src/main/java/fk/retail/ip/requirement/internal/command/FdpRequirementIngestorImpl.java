@@ -1,5 +1,6 @@
 package fk.retail.ip.requirement.internal.command;
 
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import fk.retail.ip.fdp.internal.command.FdpClientIngestor;
 import fk.retail.ip.fdp.model.*;
@@ -29,18 +30,22 @@ public class FdpRequirementIngestorImpl {
 
     public void pushToFdp(List<RequirementChangeRequest> requirementChangeRequests) {
         BatchFdpRequirementEventEntityPayload batchFdpRequirementEventEntityPayload = new BatchFdpRequirementEventEntityPayload();
-        requirementChangeRequests.forEach(req -> {
-            String requirementId= getRequirementId(req.getRequirement());
-            FdpEntityPayload<FdpRequirementEntityData> fdpRequirementEntityPayload = requirementToFdpEntityMapper.convertToEntityPayload(requirementId,req.getRequirement());
-            List<FdpEventPayload<FdpRequirementEventData>> fdpRequirementEventPayload = requirementToFdpEventMapper.convertToEventPayload(requirementId,req.getRequirementChangeMaps());
-            batchFdpRequirementEventEntityPayload.getPurchaseRequirementEntity().add(fdpRequirementEntityPayload);
-            batchFdpRequirementEventEntityPayload.getPurchaseRequirementEvent().addAll(fdpRequirementEventPayload);
-        });
+        for(List<RequirementChangeRequest> requestList : Lists.partition(requirementChangeRequests, 100)) {
+            batchFdpRequirementEventEntityPayload.getPurchaseRequirementEntity().clear();
+            batchFdpRequirementEventEntityPayload.getPurchaseRequirementEvent().clear();
+            requestList.forEach(req -> {
+                String requirementId = getRequirementId(req.getRequirement());
+                FdpEntityPayload<FdpRequirementEntityData> fdpRequirementEntityPayload = requirementToFdpEntityMapper.convertToEntityPayload(requirementId, req.getRequirement());
+                List<FdpEventPayload<FdpRequirementEventData>> fdpRequirementEventPayload = requirementToFdpEventMapper.convertToEventPayload(requirementId, req.getRequirementChangeMaps());
+                batchFdpRequirementEventEntityPayload.getPurchaseRequirementEntity().add(fdpRequirementEntityPayload);
+                batchFdpRequirementEventEntityPayload.getPurchaseRequirementEvent().addAll(fdpRequirementEventPayload);
+            });
 
-        log.info("Pushing {} number of requirement entities to fdp", batchFdpRequirementEventEntityPayload.getPurchaseRequirementEntity().size());
-        log.info("Pushing {} number of requirement events to fdp", batchFdpRequirementEventEntityPayload.getPurchaseRequirementEvent().size());
-        if(!batchFdpRequirementEventEntityPayload.getPurchaseRequirementEntity().isEmpty())
-            fdpClientIngestor.pushToFdp(batchFdpRequirementEventEntityPayload);
+            log.info("Pushing {} number of requirement entities to fdp", batchFdpRequirementEventEntityPayload.getPurchaseRequirementEntity().size());
+            log.info("Pushing {} number of requirement events to fdp", batchFdpRequirementEventEntityPayload.getPurchaseRequirementEvent().size());
+            if (!batchFdpRequirementEventEntityPayload.getPurchaseRequirementEntity().isEmpty())
+                fdpClientIngestor.pushToFdp(batchFdpRequirementEventEntityPayload);
+        }
     }
 
     private String getRequirementId(Requirement requirement) {

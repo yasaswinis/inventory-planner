@@ -6,7 +6,7 @@ dataSource:
   # the password
   password:
   # the JDBC URL
-  url: jdbc:mysql://localhost/erp_inv_db_development
+  url: jdbc:mysql://localhost/erp_inv_db_development?rewriteBatchedStatements=true
   # any properties specific to your JDBC driver:
   properties:
     charSet: UTF-8
@@ -65,9 +65,17 @@ zuluConfiguration:
   clientId: "retail.rp"
   maxBatchSize: 30
 
+procClientConfiguration:
+  url: http://stage-flo-proc-b2b.ch.flipkart.com
+  viewPath: "/requirements"
+  callbackUrl: http://localhost:32000/v1/requirement/callback/
+  requirementQueueName: proc_b2b_produciton
+
+
 sslClientConfiguration:
   url: http://10.85.52.106
   viewPath: "/supplier_selection"
+  batchSize: 10
 
 fdpConfiguration:
   url: http://10.47.2.122:28223/ingestion/objects
@@ -93,7 +101,21 @@ clientConfiguration:
   gzipEnabledForRequests: false
   chunkedEncodingEnabled: false
 
+triggerRequirementConfiguration:
+  url: http://10.85.53.212/v1/requirement
+  projectionQueueName: retail_rp_internal_projection
+  fetchDataBatchSize: 10000
+  createReqBatchSize: 10
 
-sslClientConfiguration:
-  url: http://10.85.52.106
-  viewPath: "/supplier_selection"
+d42Configuration:
+  accessKey: "EKBK5XNIHLM7E3290RBX"
+  secretKey: "QGXi9BkrIArIb255tHRFR7trEcPSvxBi3X0LsBwP"
+  url: "http://10.47.2.2"
+
+connektConfiguration:
+  url: http://10.47.4.150:80/v1/send/email/flipkart-promo
+  x-api-key: BM9kig6BGwN68aeJG2ESWkxt8
+
+emailConfiguration:
+  host: localhost:55058
+  path: "/projection/"
