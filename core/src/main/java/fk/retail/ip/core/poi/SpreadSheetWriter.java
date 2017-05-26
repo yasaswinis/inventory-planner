@@ -39,9 +39,10 @@ public class SpreadSheetWriter {
         List<String> headers = new ArrayList<>();
         try (OPCPackage pkg = OPCPackage.open(tempFile.toFile())) {
             XSSFWorkbook wb = new XSSFWorkbook(pkg);
+            validateSheet(wb);
             wbss = new SXSSFWorkbook(wb, 100);
             Sheet sheet = wb.getSheetAt(0);
-            validateSheet(wbss);
+
 
             Row headerRow = sheet.getRow(0);
             for (int c = 0; c < headerRow.getLastCellNum(); c++) {
@@ -99,7 +100,7 @@ public class SpreadSheetWriter {
         cell.setCellStyle(editableStyle);
     }
 
-    protected void validateSheet(SXSSFWorkbook wb){
+    protected void validateSheet(XSSFWorkbook wb) throws IOException {
     }
 
 }
