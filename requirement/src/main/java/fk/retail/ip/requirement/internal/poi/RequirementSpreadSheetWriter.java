@@ -6,6 +6,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTSheetProtection;
 
 import fk.retail.ip.core.enums.RequirementExcelHeaders;
@@ -16,7 +18,7 @@ import fk.retail.ip.core.poi.SpreadSheetWriter;
  */
 public class RequirementSpreadSheetWriter extends SpreadSheetWriter {
 
-    protected void validateSheet(SXSSFWorkbook wb)  {
+    protected void validateSheet(XSSFWorkbook wb)  {
 
         Sheet s = wb.getSheetAt(0);
         // hide 1st column with requirement_id header
@@ -26,7 +28,7 @@ public class RequirementSpreadSheetWriter extends SpreadSheetWriter {
         s.protectSheet("uneditable");
 
         // protect sheet with some options
-        SXSSFSheet sheet = ((SXSSFSheet)s);
+        XSSFSheet sheet = ((XSSFSheet)s);
 
 
         sheet.enableLocking();
