@@ -105,7 +105,7 @@ public class RequirementService {
         List<Requirement> requirements = requirementRepository.findRequirements(requirementIds, requirementState, fsns);
         requirements = requirements.stream().filter(requirement -> !requirement.getWarehouse().equals("all")).collect(Collectors.toList());
         RequirementState state = requirementStateFactory.getRequirementState(requirementState);
-        return state.download(requirements, isLastAppSupplierRequired);
+        return state.download(requirements, isLastAppSupplierRequired, requirementState);
     }
 
     public UploadResponse uploadRequirement(

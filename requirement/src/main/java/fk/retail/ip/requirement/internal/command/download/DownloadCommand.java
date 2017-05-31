@@ -31,11 +31,11 @@ public abstract class DownloadCommand extends RequirementDataAggregator {
         this.generateExcelCommand = generateExcelCommand;
     }
 
-    public StreamingOutput execute(List<Requirement> requirements, boolean isLastAppSupplierRequired) {
+    public StreamingOutput execute(List<Requirement> requirements, boolean isLastAppSupplierRequired, String state) {
         log.info("Download Request for {} number of requirements", requirements.size());
         if (requirements.isEmpty()) {
             log.info("No requirements found for download. Generating empty file");
-            return generateExcelCommand.generateExcel(Collections.EMPTY_LIST, getTemplateName(isLastAppSupplierRequired));
+            return generateExcelCommand.generateExcel(Collections.EMPTY_LIST, getTemplateName(isLastAppSupplierRequired), state);
         }
         List<RequirementDownloadLineItem> requirementDownloadLineItems = requirements.stream().map(RequirementDownloadLineItem::new).collect(toList());
         Map<String, List<RequirementDownloadLineItem>> fsnToRequirement = requirementDownloadLineItems.stream().collect(Collectors.groupingBy(RequirementDownloadLineItem::getFsn));
@@ -47,7 +47,7 @@ public abstract class DownloadCommand extends RequirementDataAggregator {
         fetchSalesBucketData(fsns, requirementDownloadLineItems);
         fetchWarehouseName(requirementWhs, requirementDownloadLineItems);
         fetchRequirementStateData(isLastAppSupplierRequired, fsns, requirementDownloadLineItems);
-        return generateExcelCommand.generateExcel(requirementDownloadLineItems, getTemplateName(isLastAppSupplierRequired));
+        return generateExcelCommand.generateExcel(requirementDownloadLineItems, getTemplateName(isLastAppSupplierRequired), state);
     }
 
     protected abstract String getTemplateName(boolean isLastAppSupplierRequired);

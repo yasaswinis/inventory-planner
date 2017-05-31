@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface RequirementState {
 
-    StreamingOutput download(List<Requirement> requirements, boolean isLastAppSupplierRequired);
+    StreamingOutput download(List<Requirement> requirements, boolean isLastAppSupplierRequired, String state );
     UploadOverrideResult upload(List<Requirement> requirements, List<RequirementUploadLineItem> requirementUploadLineItems, String userID, String state);
 
 }

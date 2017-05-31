@@ -75,8 +75,8 @@ public class IPCFinalisedCommandTest {
         Mockito.when(warehouseRepository.fetchWarehouseNameByCode(Mockito.anySetOf(String.class))).thenReturn(getWarehouse());
         Mockito.when(productInfoRepository.getProductInfo(Mockito.anySet())).thenReturn(TestHelper.getProductInfo());
         Mockito.doReturn(TestHelper.getZuluData()).when(zuluClient).getRetailProductAttributes(Mockito.anyList());
-        downloadIPCFinalisedCommand.execute(requirements,false);
-        Mockito.verify(generateExcelCommand).generateExcel(captor.capture(), Mockito.eq("/templates/IPCFinalised.xlsx"));
+        downloadIPCFinalisedCommand.execute(requirements,false,"");
+        Mockito.verify(generateExcelCommand).generateExcel(captor.capture(), Mockito.eq("/templates/IPCFinalised.xlsx"),Mockito.eq("ipc_finalized"));
         Assert.assertEquals(2, captor.getValue().size());
 
     }

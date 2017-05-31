@@ -80,8 +80,8 @@ public class DownloadPreProposedCommandTest {
         Mockito.when(productInfoRepository.getProductInfo(Mockito.anySet())).thenReturn(TestHelper.getProductInfo());
         Mockito.doReturn(TestHelper.getZuluData()).when(zuluClient).getRetailProductAttributes(Mockito.anyList());
 
-        downloadPreProposedCommand.execute(requirements,false);
-        Mockito.verify(generateExcelCommand).generateExcel(captor.capture(), Mockito.eq("/templates/pre_proposed.xlsx"));
+        downloadPreProposedCommand.execute(requirements,false, "");
+        Mockito.verify(generateExcelCommand).generateExcel(captor.capture(), Mockito.eq("/templates/pre_proposed.xlsx"),Mockito.eq("proposed"));
 
         Assert.assertEquals(2, captor.getValue().size());
         Assert.assertEquals("fsn", captor.getValue().get(0).getFsn());

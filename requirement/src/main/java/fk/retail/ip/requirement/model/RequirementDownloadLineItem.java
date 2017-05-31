@@ -13,7 +13,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @Data
 @NoArgsConstructor
-public class RequirementDownloadLineItem {
+public class
+
+
+RequirementDownloadLineItem {
 
     //todo: verify with excel columns
     @JsonProperty("FSN")

@@ -22,8 +22,8 @@ public class IPCReviewRequirementState implements RequirementState {
     }
 
     @Override
-    public StreamingOutput download(List<Requirement> requirements, boolean isLastAppSupplierRequired) {
-        return downloadIPCReviewCommandProvider.get().execute(requirements, isLastAppSupplierRequired);
+    public StreamingOutput download(List<Requirement> requirements, boolean isLastAppSupplierRequired, String state) {
+        return downloadIPCReviewCommandProvider.get().execute(requirements, isLastAppSupplierRequired,state);
     }
 
     @Override

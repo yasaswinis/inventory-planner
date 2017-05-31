@@ -32,8 +32,8 @@ public class CDOReviewRequirementState implements RequirementState {
     }
 
     @Override
-    public StreamingOutput download(List<Requirement> requirements, boolean isLastAppSupplierRequired) {
-        return downloadCDOReviewCommandProvider.get().execute(requirements, isLastAppSupplierRequired);
+    public StreamingOutput download(List<Requirement> requirements, boolean isLastAppSupplierRequired, String state) {
+        return downloadCDOReviewCommandProvider.get().execute(requirements, isLastAppSupplierRequired, state);
     }
 
 }

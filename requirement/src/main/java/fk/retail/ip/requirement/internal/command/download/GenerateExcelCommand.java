@@ -21,9 +21,9 @@ import java.io.InputStream;
 @Slf4j
 public class GenerateExcelCommand {
 
-    public StreamingOutput generateExcel(List<RequirementDownloadLineItem> requirementDownloadLineItems, String templateName) {
+    public StreamingOutput generateExcel(List<RequirementDownloadLineItem> requirementDownloadLineItems, String templateName, String state) {
         log.info("Generating excel for {} number of requirements",requirementDownloadLineItems.size());
-        SpreadSheetWriter spreadsheet = new RequirementSpreadSheetWriter();
+        SpreadSheetWriter spreadsheet = new RequirementSpreadSheetWriter(state);
         ObjectMapper mapper = new ObjectMapper();
         InputStream template = getClass().getResourceAsStream(templateName);
         StreamingOutput output = (OutputStream out) -> {

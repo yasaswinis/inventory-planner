@@ -94,8 +94,8 @@ public class DownloadBizFinReviewCommandTest {
         Mockito.when(requirementRepository.findEnabledRequirementsByStateFsn(Mockito.matches(RequirementApprovalState.BIZFIN_REVIEW.toString()),Mockito.anySetOf(String.class))).thenReturn(getBizFinData());
         Mockito.when(requirementRepository.findEnabledRequirementsByStateFsn(Mockito.matches(RequirementApprovalState.CDO_REVIEW.toString()),Mockito.anySetOf(String.class))).thenReturn(getCdoData());
         Mockito.when(requirementRepository.findEnabledRequirementsByStateFsn(Mockito.matches(RequirementApprovalState.PROPOSED.toString()),Mockito.anySetOf(String.class))).thenReturn(getIpcQuantity());
-        downloadBizFinReviewCommand.execute(requirements,false);
-        Mockito.verify(generateExcelCommand).generateExcel(captor.capture(), Mockito.eq("/templates/BizFinReview.xlsx"));
+        downloadBizFinReviewCommand.execute(requirements,false,"");
+        Mockito.verify(generateExcelCommand).generateExcel(captor.capture(), Mockito.eq("/templates/BizFinReview.xlsx"),Mockito.eq("bd_approved"));
         Assert.assertEquals(2, captor.getValue().size());
 
         Assert.assertEquals("fsn", captor.getValue().get(0).getFsn());
@@ -126,8 +126,8 @@ public class DownloadBizFinReviewCommandTest {
         Mockito.when(requirementRepository.findEnabledRequirementsByStateFsn(Mockito.matches(RequirementApprovalState.BIZFIN_REVIEW.toString()),Mockito.anySetOf(String.class))).thenReturn(getBizFinData());
         Mockito.when(requirementRepository.findEnabledRequirementsByStateFsn(Mockito.matches(RequirementApprovalState.CDO_REVIEW.toString()),Mockito.anySetOf(String.class))).thenReturn(getCdoData());
         Mockito.when(requirementRepository.findEnabledRequirementsByStateFsn(Mockito.matches(RequirementApprovalState.PROPOSED.toString()),Mockito.anySetOf(String.class))).thenReturn(getIpcQuantity());
-        downloadBizFinReviewCommand.execute(requirements,true);
-        Mockito.verify(generateExcelCommand).generateExcel(captor.capture(), Mockito.eq("/templates/BizFinReviewWithLastAppSupplier.xlsx"));
+        downloadBizFinReviewCommand.execute(requirements,true,"");
+        Mockito.verify(generateExcelCommand).generateExcel(captor.capture(), Mockito.eq("/templates/BizFinReviewWithLastAppSupplier.xlsx"),Mockito.eq("bd_approved"));
         Assert.assertEquals(2, captor.getValue().size());
 
         Assert.assertEquals("fsn", captor.getValue().get(0).getFsn());

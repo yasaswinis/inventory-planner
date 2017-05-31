@@ -23,8 +23,8 @@ public class IPCFinalisedRequirementState implements RequirementState {
     }
 
     @Override
-    public StreamingOutput download(List<Requirement> requirements, boolean isLastAppSupplierRequired) {
-        return downloadIPCFinalisedCommandProvider.get().execute(requirements, isLastAppSupplierRequired);
+    public StreamingOutput download(List<Requirement> requirements, boolean isLastAppSupplierRequired, String state) {
+        return downloadIPCFinalisedCommandProvider.get().execute(requirements, isLastAppSupplierRequired, state);
     }
 
     @Override

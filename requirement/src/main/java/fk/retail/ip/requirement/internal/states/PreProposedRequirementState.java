@@ -23,8 +23,8 @@ public class PreProposedRequirementState implements RequirementState {
     }
 
     @Override
-    public StreamingOutput download(List<Requirement> requirements, boolean isLastAppSupplierRequired) {
-        return downloadPreProposedCommandProvider.get().execute(requirements, isLastAppSupplierRequired);
+    public StreamingOutput download(List<Requirement> requirements, boolean isLastAppSupplierRequired, String state) {
+        return downloadPreProposedCommandProvider.get().execute(requirements, isLastAppSupplierRequired,state);
     }
 
     @Override
