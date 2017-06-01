@@ -23,6 +23,7 @@ import fk.retail.ip.ssl.client.HystrixSslClient;
 import fk.retail.ip.ssl.model.SupplierSelectionRequest;
 import fk.retail.ip.ssl.model.SupplierSelectionResponse;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -142,7 +143,14 @@ public class TestResource {
         requirement.setProcType("DAILY_PLANNING");
         requirements.add(requirement);
         List<SupplierSelectionRequest> requests = getSupplierSelectionRequest(requirements);
-        List<SupplierSelectionResponse> responses = hystrixSslClient.getSupplierSelectionResponse(requests);
+        List<SupplierSelectionResponse> responses = null;
+        try {
+            responses = hystrixSslClient.getSupplierSelectionResponse(requests);
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return responses;
 
     }

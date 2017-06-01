@@ -6,9 +6,7 @@ import fk.retail.ip.requirement.internal.entities.ProductInfo;
 import fk.retail.ip.requirement.internal.entities.Requirement;
 import fk.retail.ip.requirement.internal.repository.ProductInfoRepository;
 import fk.retail.ip.requirement.internal.repository.WarehouseSupplierSlaRepository;
-import fk.retail.ip.requirement.model.RequirementDownloadLineItem;
 import fk.retail.ip.requirement.model.RequirementUploadLineItem;
-import fk.retail.ip.ssl.SslClientCallable;
 import fk.retail.ip.ssl.client.SslClient;
 import fk.retail.ip.ssl.config.SslClientConfiguration;
 import fk.retail.ip.ssl.model.SupplierSelectionRequest;
@@ -22,10 +20,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -120,17 +114,8 @@ public class RequirementHelper {
 
     public MultiKeyMap<String,SupplierSelectionResponse> getSSLResponseMap (List<Requirement> requirements) throws ExecutionException, InterruptedException {
         log.info("Supplier Override request received for "+ requirements.size() + "number of events");
-        ExecutorService executor = Executors.newFixedThreadPool(5);
         List<SupplierSelectionRequest> requests = createSupplierSelectionRequest(requirements);
-        List<SupplierSelectionResponse> supplierSelectionResponses = Lists.newArrayList();
-        List<Future<List<SupplierSelectionResponse>>> futureList = Lists.newArrayList();
-        for(List<SupplierSelectionRequest> requestList : Lists.partition(requests, sslClientConfiguration.getBatchSize())) {
-            Future<List<SupplierSelectionResponse>> futureResponse = executor.submit(new SslClientCallable(sslClient, requestList));
-            futureList.add(futureResponse);
-        }
-        for(Future<List<SupplierSelectionResponse>> future : futureList) {
-            supplierSelectionResponses.addAll(future.get());
-        }
+        List<SupplierSelectionResponse> supplierSelectionResponses = sslClient.getSupplierSelectionResponse(requests);
         MultiKeyMap<String, SupplierSelectionResponse> supplierSelectionResponseMap  = new MultiKeyMap<>();
         supplierSelectionResponses.forEach( response -> {
             supplierSelectionResponseMap.put(response.getFsn(),response.getWarehouseId(), response);

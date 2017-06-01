@@ -166,18 +166,18 @@ public class CDOReviewUploadCommand extends UploadCommand {
 
     private SupplierView validateOverriddenSupplierFound(String supplierName, Requirement requirement,
                                                          MultiKeyMap<String,SupplierSelectionResponse> fsnWhSupplierMap) {
-        if(fsnWhSupplierMap==null)
+        if(fsnWhSupplierMap==null || fsnWhSupplierMap.isEmpty())
             return null;
         SupplierSelectionResponse supplierSelectionResponse = fsnWhSupplierMap.get(requirement.getFsn(), requirement.getWarehouse());
         if (supplierSelectionResponse == null)
             return null;
-        if(supplierSelectionResponse.getSuppliers()!=null) {
+        if(supplierSelectionResponse.getSuppliers()!=null && !supplierSelectionResponse.getSuppliers().isEmpty()) {
             Optional<SupplierView> supplier =
                     supplierSelectionResponse.getSuppliers().stream().filter(s -> (s.getSourceId().equals(supplierName))).findFirst();
             if (supplier.isPresent())
                 return supplier.get();
         }
-        if(supplierSelectionResponse.getOtherSuppliers()!=null) {
+        if(supplierSelectionResponse.getOtherSuppliers()!=null && !supplierSelectionResponse.getSuppliers().isEmpty()) {
             Optional<SupplierView> otherSupplier =
                     supplierSelectionResponse.getOtherSuppliers().stream().filter(s -> (s.getSourceId().equals(supplierName))).findFirst();
             if (otherSupplier.isPresent())

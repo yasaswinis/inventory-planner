@@ -15,10 +15,13 @@ import fk.retail.ip.ssl.config.SslClientConfiguration;
 import fk.retail.ip.zulu.config.ZuluConfiguration;
 import fk.sp.common.extensions.dropwizard.db.HasDataSourceFactory;
 import io.dropwizard.client.JerseyClientConfiguration;
+import io.dropwizard.setup.Environment;
 import org.glassfish.jersey.filter.LoggingFilter;
 
+import javax.inject.Named;
 import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.client.ClientResponseFilter;
+import java.util.concurrent.ExecutorService;
 import java.util.logging.Logger;
 
 import static com.google.inject.multibindings.Multibinder.newSetBinder;
@@ -95,5 +98,15 @@ public class ManagerModule extends AbstractModule {
     @Provides
     public EmailConfiguration getEmailConfiguration(ManagerConfiguration managerConfiguration) {
         return managerConfiguration.getEmailConfiguration();
+    }
+
+    @Named("inventory-planner")
+    @Provides
+    @javax.inject.Singleton
+    ExecutorService provideExecutorService(Environment e) {
+        return e.lifecycle()
+                .executorService("inventory-planner")
+                .maxThreads(50)
+                .build();
     }
 }
