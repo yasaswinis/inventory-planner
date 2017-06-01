@@ -23,7 +23,6 @@ public class DownloadPreProposedCommand extends DownloadCommand {
         return "/templates/pre_proposed.xlsx";
     }
 
-
     @Override
     void fetchRequirementStateData(boolean isLastAppSupplierRequired, Set<String> requirementFsns, List<RequirementDownloadLineItem> requirementDownloadLineItems) {
 
