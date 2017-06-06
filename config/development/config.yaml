@@ -106,11 +106,10 @@ d42Configuration:
   secretKey: "QGXi9BkrIArIb255tHRFR7trEcPSvxBi3X0LsBwP"
   url: "http://10.47.2.2"
 
-
 connektConfiguration:
-  url: http://10.47.4.150:80/v1/send/email/flipkart-promo
-  x-api-key: BM9kig6BGwN68aeJG2ESWkxt8
+  url: http://10.47.0.120:80/v1/send/email/flipkart
+  x-api-key: fNmCcR7kE7Qwo5djXGRWP483AMJ37iZqfy7wTagepejiNJFD
 
-emailConfiguration:
+RPUIConfiguration:
   host: localhost:55058
   path: "/projection/"
