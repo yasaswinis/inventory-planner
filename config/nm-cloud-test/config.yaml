@@ -132,9 +132,13 @@ d42Configuration:
   secretKey: "QGXi9BkrIArIb255tHRFR7trEcPSvxBi3X0LsBwP"
   url: "http://10.47.2.2"
 
-RPUIConfiguration:
+emailConfiguration:
   host: 10.85.169.122:39001
   path: "/projection/"
+
+groupSegmentationConfiguration:
+  url: http://10.85.110.102:32000/v1/group
+  queueName: retail_ip_group_segmentation
 
 
 
