@@ -81,8 +81,8 @@ public class DownloadCDOReviewCommandTest {
         Mockito.doReturn(TestHelper.getZuluData()).when(zuluClient).getRetailProductAttributes(Mockito.anyList());
         Mockito.when(lastAppSupplierRepository.fetchLastAppSupplierForFsns(Mockito.anySetOf(String.class))).thenReturn(getLasAppSupplier());
         Mockito.when(requirementRepository.findEnabledRequirementsByStateFsn(Mockito.anyString(),Mockito.anySetOf(String.class))).thenReturn(getBizFinData());
-        downloadCDOReviewCommand.execute(requirements,false,"");
-        Mockito.verify(generateExcelCommand).generateExcel(captor.capture(), Mockito.eq("/templates/CDOReview.xlsx"),Mockito.eq("approved"));
+        downloadCDOReviewCommand.execute(requirements,false,"CDO_REVIEW");
+        Mockito.verify(generateExcelCommand).generateExcel(captor.capture(), Mockito.eq("/templates/CDOReview.xlsx"),Mockito.eq("CDO_REVIEW"));
         Assert.assertEquals(2, captor.getValue().size());
 
         Assert.assertEquals("fsn", captor.getValue().get(0).getFsn());
@@ -108,8 +108,8 @@ public class DownloadCDOReviewCommandTest {
         Mockito.doReturn(TestHelper.getZuluData()).when(zuluClient).getRetailProductAttributes(Mockito.anyList());
         Mockito.when(lastAppSupplierRepository.fetchLastAppSupplierForFsns(Mockito.anySetOf(String.class))).thenReturn(getLasAppSupplier());
         Mockito.when(requirementRepository.findEnabledRequirementsByStateFsn(Mockito.anyString(),Mockito.anySetOf(String.class))).thenReturn(getBizFinData());
-        downloadCDOReviewCommand.execute(requirements,true,"");
-        Mockito.verify(generateExcelCommand).generateExcel(captor.capture(), Mockito.eq("/templates/CDOReviewWithLastAppSupplier.xlsx"),Mockito.eq("approved"));
+        downloadCDOReviewCommand.execute(requirements,true,"CDO_REVIEW");
+        Mockito.verify(generateExcelCommand).generateExcel(captor.capture(), Mockito.eq("/templates/CDOReviewWithLastAppSupplier.xlsx"),Mockito.eq("CDO_REVIEW"));
         Assert.assertEquals(2, captor.getValue().size());
 
         Assert.assertEquals("fsn", captor.getValue().get(0).getFsn());
