@@ -84,7 +84,7 @@ zuluConfiguration:
 
 sslClientConfiguration:
   url: http://10.85.52.106
-  viewPath: "/supplier_selection"
+  viewPath: "/supplier_contract"
   batchSize: 10
 
 fdpConfiguration:
