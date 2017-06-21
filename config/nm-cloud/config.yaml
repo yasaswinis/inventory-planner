@@ -130,10 +130,11 @@ connektConfiguration:
   x-api-key: fNmCcR7kE7Qwo5djXGRWP483AMJ37iZqfy7wTagepejiNJFD
 
 RPUIConfiguration:
-  host: 10.85.169.122:39001
+  host: 10.85.52.190
   path: "/projection/"
 
 d42Configuration:
   accessKey: "A3O82LF3YGNY0DBDRE34"
   secretKey: "j9/QcoFtMN9cA2ZgDy/E6Yvx+Gv4zqhB63cru55G"
   url: "http://10.47.2.22"
+
