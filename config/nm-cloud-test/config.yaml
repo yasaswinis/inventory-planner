@@ -140,5 +140,8 @@ groupSegmentationConfiguration:
    url: http://10.85.110.102:32000/v1/group
    queueName: retail_ip_group_segmentation
 
+authNConfiguration:
+  enableCas: false
+
 
 
