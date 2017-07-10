@@ -82,9 +82,14 @@ zuluConfiguration:
   clientId: "retail.rp"
   maxBatchSize: 30
 
+scsClientConfiguration:
+  url: http://10.85.52.106
+  path: "/supplier_contract"
+  batchSize: 10
+
 sslClientConfiguration:
   url: http://10.85.52.106
-  viewPath: "/supplier_contract"
+  viewPath: "/supplier_selection"
   batchSize: 10
 
 fdpConfiguration:
