@@ -149,4 +149,19 @@ authNConfiguration:
   enableCas: false
 
 
+dohCalculationConfiguration:
+  url: http://10.85.110.102:32000/v1/doh/
+  queueName: retail_ip_doh
+
+
+healthDataSyncConfiguration:
+  url: http://10.85.110.102:32000/v1/doh/sync/
+  queueName: retail_ip_doh
+
+hermesConfiguration:
+  url: http://10.85.233.43:5510/v1/gulp/products/
+  path: /attributes
+  queueName: retail_ip_health_sync
+
+
 
